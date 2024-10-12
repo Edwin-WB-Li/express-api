@@ -1,98 +1,80 @@
 // 引入 joi 进行输入验证
 const Joi = require('joi');
-const moment = require('moment')
-const menusModel = require('../../models/menus/menusModel.js')
-const {
-  verifyToken
-} = require('../../utils/index.js')
-const {
-  handleError,
-  handleServerError
-} = require('../../utils/index.js');
+const moment = require('moment');
+const menusModel = require('../../models/menus/menusModel.js');
+const { verifyToken } = require('../../utils/index.js');
+const { handleError, handleServerError } = require('../../utils/index.js');
 class MenuController {
   // 根据 role 获取菜单列表 GET
   static async getMenuListByRole(req, res) {
     try {
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 对请求参数进行验证
       const schema = Joi.object({
         role: Joi.string().max(255).required(),
       });
-      const {
-        error,
-        value
-      } = schema.validate(req.query);
+      const { error, value } = schema.validate(req.query);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: error.details
+          data: error.details,
         });
       }
       // 入参
-      let {
-        role
-      } = value
+      let { role } = value;
 
       const menu = await menusModel.find({
         role: {
-          $in: [role]
-        }
-      })
+          $in: [role],
+        },
+      });
 
       res.json({
         code: 200,
         message: 'success',
         data: {
-          menu
-        }
-      })
-
+          menu,
+        },
+      });
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
   // 获取所有菜单列表 POST
   static async getAllMenuList(req, res) {
     try {
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 对请求参数进行验证
       const schema = Joi.object({
         menuName: Joi.string().allow('').max(255).default(''),
         role: Joi.array().items(Joi.string()).default([]),
         visible: Joi.boolean().allow(null).default(null),
       });
-      const {
-        error,
-        value,
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: error.details
+          data: error.details,
         });
       }
       // 入参
-      const {
-        menuName,
-        visible,
-        role
-      } = value
+      const { menuName, visible, role } = value;
 
       const query = {};
 
       if (menuName.trim()) {
         query.menuName = {
           $regex: menuName.trim(),
-          $options: 'i'
+          $options: 'i',
         };
       }
 
@@ -106,28 +88,27 @@ class MenuController {
           // 模糊查询
           // $in: role
           // 精准查询
-          $all: role
+          $all: role,
         };
       }
-      
-      const list = await menusModel.find(query)
+
+      const list = await menusModel.find(query);
 
       if (list) {
         res.json({
           code: 200,
           message: 'success',
           data: {
-            list
-          }
-        })
+            list,
+          },
+        });
       }
-
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
@@ -135,44 +116,41 @@ class MenuController {
   static async getMenuListInfoById(req, res) {
     try {
       // token 校验
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 对请求参数进行验证
-      const idSchema = Joi.string().max(255).required()
-      const id = req.params.id
-      const {
-        error
-      } = idSchema.validate(id);
+      const idSchema = Joi.string().max(255).required();
+      const id = req.params.id;
+      const { error } = idSchema.validate(id);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: error.details
+          data: error.details,
         });
       }
 
-      const list = await menusModel.findById(id)
+      const list = await menusModel.findById(id);
 
       if (list) {
         res.json({
           code: 200,
           message: 'success',
-          data: list
-        })
+          data: list,
+        });
       } else {
         return res.status(404).json({
           code: 404,
           message: '未找到指定ID的菜单',
-          data: null
+          data: null,
         });
       }
-
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
@@ -180,39 +158,36 @@ class MenuController {
   static async deleteMenusById(req, res) {
     try {
       // token 校验
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       const schema = Joi.array().items(Joi.string().min(3).max(30).required());
       // 对请求参数进行验证
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
 
-      const _ids = value
+      const _ids = value;
 
       // 执行删除操作
       const result = await menusModel.deleteMany({
         _id: {
-          $in: _ids
-        }
+          $in: _ids,
+        },
       });
 
-      console.log('result', result)
+      console.log('result', result);
 
       if (result.deletedCount === 0) {
         return res.status(404).json({
           code: 404,
           message: '未找到任何匹配的菜单',
           data: null,
-          status: false
+          status: false,
         });
       }
 
@@ -220,17 +195,16 @@ class MenuController {
         code: 200,
         message: '用户删除成功',
         data: {
-          deletedCount: result.deletedCount
+          deletedCount: result.deletedCount,
         },
-        status: true
+        status: true,
       });
-
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
-        message: errorMessage ?? "服务器错误",
-        data: null
+        message: errorMessage ?? '服务器错误',
+        data: null,
       });
     }
   }
@@ -238,7 +212,7 @@ class MenuController {
   static async addAndEditMenuListInfo(req, res) {
     try {
       // token 校验
-      await verifyToken(req, res)
+      await verifyToken(req, res);
 
       const schema = Joi.object({
         id: Joi.number().required(),
@@ -259,16 +233,13 @@ class MenuController {
         newLinkFlag: Joi.boolean().default(false),
       });
       // 对请求参数进行验证
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
       // 对请求参数进行验证
@@ -288,15 +259,15 @@ class MenuController {
         update_time = moment.utc(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
         newLinkFlag,
         role,
-        type
-      } = value
+        type,
+      } = value;
 
       // 检查更新后的 code 是否已存在
       const existingCode = await menusModel.findOne({
         code,
         _id: {
-          $ne: _id
-        }
+          $ne: _id,
+        },
       });
 
       if (existingCode) {
@@ -304,15 +275,15 @@ class MenuController {
           code: 400,
           message: '更新失败, 权限码已存在,不能重复!',
           data: null,
-          status: false
+          status: false,
         });
       }
       // 检查更新后的 path 是否已被其他用户使用
       const existingPath = await menusModel.findOne({
         path,
         _id: {
-          $ne: _id
-        }
+          $ne: _id,
+        },
       });
 
       if (existingPath) {
@@ -320,7 +291,7 @@ class MenuController {
           code: 400,
           message: '更新失败, 路径已存在,不能重复',
           data: null,
-          status: false
+          status: false,
         });
       }
 
@@ -340,15 +311,17 @@ class MenuController {
         orderNum,
         newLinkFlag,
         role,
-        update_time
-      }
+        update_time,
+      };
       // 查找并更新 menus 信息
-      const data = await menusModel.findOneAndUpdate({
-          _id
+      const data = await menusModel.findOneAndUpdate(
+        {
+          _id,
         },
-        updateData, {
+        updateData,
+        {
           new: true,
-          runValidators: true
+          runValidators: true,
         }
       );
       if (!data) {
@@ -356,21 +329,21 @@ class MenuController {
           code: 400,
           message: '未找到',
           data: null,
-          status: false
+          status: false,
         });
       }
       res.status(200).json({
         code: 200,
         message: '更新成功',
         data,
-        status: true
+        status: true,
       });
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
-        message: errorMessage ?? "服务器错误",
-        data: null
+        message: errorMessage ?? '服务器错误',
+        data: null,
       });
     }
   }
@@ -378,7 +351,7 @@ class MenuController {
   static async addSubmenusOrButton(req, res) {
     try {
       // token 校验
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 对请求参数进行验证
       const schema = Joi.object({
         id: Joi.number().required(),
@@ -397,16 +370,13 @@ class MenuController {
         newLinkFlag: Joi.boolean().default(false),
       });
 
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
       // 对请求参数进行验证
@@ -424,12 +394,12 @@ class MenuController {
         orderNum,
         update_time = moment.utc(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
         newLinkFlag,
-        role
-      } = value
+        role,
+      } = value;
 
       // 检查更新后的 id 是否已存在
       const existingId = await menusModel.findOne({
-        id
+        id,
       });
 
       if (existingId) {
@@ -437,13 +407,13 @@ class MenuController {
           code: 400,
           message: '添加失败, id已存在,不能重复!',
           data: null,
-          status: false
+          status: false,
         });
       }
 
       // 检查更新后的 权限码 是否已存在
       const existingCode = await menusModel.findOne({
-        code
+        code,
       });
 
       if (existingCode) {
@@ -451,15 +421,15 @@ class MenuController {
           code: 400,
           message: '添加失败, 权限码已存在,不能重复!',
           data: null,
-          status: false
+          status: false,
         });
       }
 
       // 添加 按钮时，无需校验 path
-      if (menuType != "F") {
+      if (menuType != 'F') {
         // 检查更新后的 path 是否已存在
         const existingPath = await menusModel.findOne({
-          path
+          path,
         });
 
         if (existingPath) {
@@ -467,7 +437,7 @@ class MenuController {
             code: 400,
             message: '添加失败, 路径已存在,不能重复',
             data: null,
-            status: false
+            status: false,
           });
         }
       }
@@ -490,8 +460,8 @@ class MenuController {
         newLinkFlag,
         role,
         update_time,
-        create_time: createTime
-      }
+        create_time: createTime,
+      };
 
       //  插入数据库
       const data = await menusModel.create(newData);
@@ -500,18 +470,17 @@ class MenuController {
         code: 200,
         message: '添加成功',
         data,
-        status: true
+        status: true,
       });
-
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
-        message: errorMessage ?? "服务器错误",
-        data: null
+        message: errorMessage ?? '服务器错误',
+        data: null,
       });
     }
   }
 }
 
-module.exports = MenuController
+module.exports = MenuController;

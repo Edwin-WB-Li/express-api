@@ -1,133 +1,38 @@
 // 引入 joi 进行输入验证
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
-const moment = require('moment')
-const {
-  createToken,
-  verifyToken
-} = require('../../utils/');
-const usersModel = require('../../models/users/usersModel.js')
-const {
-  handleError,
-  handleServerError
-} = require('../../utils/index.js');
+const moment = require('moment');
+const { createToken, verifyToken } = require('../../utils/');
+const usersModel = require('../../models/users/usersModel.js');
+const { handleError, handleServerError } = require('../../utils/index.js');
 class UsersController {
   // 登录  POST
-  /**
-   * @swagger
-   * /users/login:
-   *   post:
-   *     summary: 用户登录接口
-   *     description: 用户通过用户名和密码登录系统。
-   *     requestBody:
-   *       required: true
-   *       content:
-   *         application/json:
-   *           schema:
-   *             type: object
-   *             properties:
-   *               username:
-   *                 type: string
-   *                 description: 用户名
-   *                 example: "john_doe"
-   *               password:
-   *                 type: string
-   *                 description: 密码
-   *                 example: "secure_password"
-   *     responses:
-   *       200:
-   *         description: 登录成功
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 code:
-   *                   type: integer
-   *                   example: 200
-   *                 message:
-   *                   type: string
-   *                   example: "success"
-   *                 data:
-   *                   type: object
-   *                   properties:
-   *                     token:
-   *                       type: string
-   *                       example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG5kb2UiLCJyb2xlIjoiYWRtaW4iLCJfaWQiOiI2M2QxNjg0OTIwMjE3NjgiLCJpZCI6MSwiaWF0IjoxNjg5NTIwODkxfQ.8h4fKd5XJ8u67VlXq4rL6HmZ9eUZDvz8X6lOYHtjX5o"
-   *                     userInfo:
-   *                       type: object
-   *                       properties:
-   *                         id:
-   *                           type: integer
-   *                           example: 1
-   *                         name:
-   *                           type: string
-   *                           example: "John Doe"
-   *                         role:
-   *                           type: string
-   *                           example: "admin"
-   *       400:
-   *         description: 客户端错误
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 code:
-   *                   type: integer
-   *                   example: 400
-   *                 message:
-   *                   type: string
-   *                   example: "账号不存在 、账号已停用，请联系管理员、密码错误"
-   *                 data:
-   *                   type: null
-   *                 status:
-   *                   type: boolean
-   *                   example: false
-   *       500:
-   *         description: 服务器内部错误
-   *         content:
-   *           application/json:
-   *             schema:
-   *               type: object
-   *               properties:
-   *                 code:
-   *                   type: integer
-   *                   example: 500
-   *                 message:
-   *                   type: string
-   *                   example: "Internal server error"
-   *                 data:
-   *                   type: null
-   */
   static async login(req, res) {
     try {
       const schema = Joi.object({
-        username: Joi.string().pattern(/^[a-zA-Z0-9_\-\s]+$/).min(3).max(30).required(),
+        username: Joi.string()
+          .pattern(/^[a-zA-Z0-9_\-\s]+$/)
+          .min(3)
+          .max(30)
+          .required(),
         // password: Joi.string().regex(/^\$2[ayb]\$.{56}$/).required()
-        password: Joi.string().required()
+        password: Joi.string().required(),
       });
       // 对请求参数进行验证
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
       // 对请求参数进行验证
-      let {
-        username,
-        password
-      } = value
+      let { username, password } = value;
 
       const user = await usersModel.findOne({
-        username
+        username,
       });
 
       // console.log('user', user)
@@ -137,7 +42,7 @@ class UsersController {
           code: 400,
           message: '账号不存在',
           data: null,
-          status: false
+          status: false,
         });
       }
 
@@ -146,7 +51,7 @@ class UsersController {
           code: 400,
           message: '账号已停用，请联系管理员',
           data: null,
-          status: false
+          status: false,
         });
       }
 
@@ -162,14 +67,14 @@ class UsersController {
           code: 400,
           message: '密码错误',
           data: null,
-          status: false
+          status: false,
         });
       }
       // console.log(user)
       const userInfo = {
-        ...user
-      }
-      delete userInfo.password
+        ...user,
+      };
+      delete userInfo.password;
       // 登录成功，生成并返回token
       return res.status(200).json({
         code: 200,
@@ -179,18 +84,18 @@ class UsersController {
             username,
             role: user.role,
             _id: user._id, // 避免将密码信息包含在token生成的输入中
-            id: user.id
+            id: user.id,
           }),
-          userInfo: user
+          userInfo: user,
         },
-        status: true
+        status: true,
       });
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
@@ -198,11 +103,18 @@ class UsersController {
   static async register(req, res) {
     try {
       const schema = Joi.object({
-        username: Joi.string().pattern(/^[a-zA-Z0-9_\-\s]+$/).min(3).max(30).required(),
+        username: Joi.string()
+          .pattern(/^[a-zA-Z0-9_\-\s]+$/)
+          .min(3)
+          .max(30)
+          .required(),
         password: Joi.string().required(),
         confirmPassword: Joi.string().required(),
         email: Joi.string().email().required(),
-        mobile: Joi.string().length(11).pattern(/^1[5-9]\d{9}$/).required(),
+        mobile: Joi.string()
+          .length(11)
+          .pattern(/^1[5-9]\d{9}$/)
+          .required(),
         role: Joi.string().required(),
         role_name: Joi.string().required(),
         nick_name: Joi.string(),
@@ -210,42 +122,32 @@ class UsersController {
         agreement: Joi.boolean(),
       });
       // 对请求参数进行验证
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
       // 对请求参数进行验证
-      let {
-        username,
-        password,
-        email,
-        mobile,
-        role,
-        role_name,
-        nick_name
-      } = value
+      let { username, password, email, mobile, role, role_name, nick_name } =
+        value;
 
       // 计算 create_time
       const currentTime = moment.utc(Date.now()).format('YYYY-MM-DD');
 
       // 查找用户名是否重复
       const user = await usersModel.findOne({
-        username
+        username,
       });
       if (user) {
         return res.status(400).json({
           code: 400,
           message: '账号已存在',
           data: null,
-          status: false
+          status: false,
         });
       } else {
         // 加密密码
@@ -283,17 +185,17 @@ class UsersController {
           message: '注册成功',
           data: {
             id: savedUser.id,
-            username: savedUser.username
+            username: savedUser.username,
           },
-          status: true
+          status: true,
         });
       }
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
@@ -307,26 +209,20 @@ class UsersController {
         confirmNewPassword: Joi.string().required(),
       });
       // 对请求参数进行验证
-      const {
-        error
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
       // 对请求参数进行验证
-      let {
-        username,
-        oldPassword,
-        newPassword,
-      } = value
+      let { username, oldPassword, newPassword } = value;
       // 查找用户
       const user = await usersModel.findOne({
-        username
+        username,
       });
 
       if (!user) {
@@ -334,50 +230,53 @@ class UsersController {
           code: 404,
           message: '账号不存在',
           data: null,
-          status: false
+          status: false,
         });
       } else {
         // 验证旧密码是否正确
         const isMatch = bcrypt.compareSync(oldPassword, user.password);
-        // 
+        //
         if (!isMatch) {
           return res.status(400).json({
             code: 400,
             message: '旧密码错误',
             data: null,
-            status: false
+            status: false,
           });
         } else {
           // 加密新密码
           const newHashedPassword = bcrypt.hashSync(newPassword, 10);
-          await usersModel.updateOne({
-            username
-          }, {
-            password: newHashedPassword
-          })
+          await usersModel.updateOne(
+            {
+              username,
+            },
+            {
+              password: newHashedPassword,
+            }
+          );
           res.status(200).json({
             code: 200,
             message: '修改密码成功',
             data: {
-              username
+              username,
             },
-            status: true
+            status: true,
           });
         }
       }
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
   // 获取所有用户列表 POST
   static async getUserList(req, res) {
     try {
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 对请求参数进行验证
       const schema = Joi.object({
         page: Joi.number().integer().min(1).default(1), // 默认第一页
@@ -387,18 +286,15 @@ class UsersController {
         mobile: Joi.string().max(255).allow('').default(''),
         nick_name: Joi.string().max(255).allow('').default(''),
         status: Joi.boolean().allow(null).default(true),
-        create_time: Joi.date().default(null)
+        create_time: Joi.date().default(null),
       });
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
 
@@ -411,21 +307,21 @@ class UsersController {
         status,
         mobile,
         create_time,
-        nick_name
-      } = value
+        nick_name,
+      } = value;
 
       const query = {};
 
       if (username.trim()) {
         query.username = {
           $regex: username.trim(),
-          $options: 'i'
+          $options: 'i',
         };
       }
       if (nick_name.trim()) {
         query.nick_name = {
           $regex: nick_name.trim(),
-          $options: 'i'
+          $options: 'i',
         };
       }
 
@@ -445,26 +341,26 @@ class UsersController {
       }
 
       const total = await usersModel.countDocuments(query);
-      const list = await usersModel.find(query)
+      const list = await usersModel
+        .find(query)
         .limit(size)
-        .skip((page - 1) * size)
+        .skip((page - 1) * size);
 
       res.status(200).json({
         code: 200,
         message: 'success',
         data: {
           list,
-          total
-        }
-      })
-
+          total,
+        },
+      });
     } catch (error) {
       // console.error(error);
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
@@ -472,48 +368,42 @@ class UsersController {
   static async getUserInfoById(req, res) {
     // 验证请求参数
     try {
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 对请求参数进行验证
       const schema = Joi.object({
-        id: Joi.string().max(255)
+        id: Joi.string().max(255),
       });
-      const {
-        error,
-        value
-      } = schema.validate(req.params);
+      const { error, value } = schema.validate(req.params);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
 
       // 入参
-      let {
-        id
-      } = value
+      let { id } = value;
 
       const list = await usersModel.findById({
-        _id: id
-      })
+        _id: id,
+      });
 
       res.status(200).json({
         code: 200,
         message: 'success',
         data: {
-          list
-        }
-      })
-
+          list,
+        },
+      });
     } catch (error) {
       // console.error(error);
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       res.status(500).json({
         code: 500,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
   }
@@ -521,15 +411,22 @@ class UsersController {
   static async editUserInfo(req, res) {
     try {
       // token 校验
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       // 定义两个不同的模式：一个用于修改，另一个用于新增
       const editSchema = Joi.object({
         // _id: Joi.string().alphanum().min(3).max(30).required(),
-        username: Joi.string().pattern(/^[a-zA-Z0-9_\-\s]+$/).min(3).max(30).required(),
+        username: Joi.string()
+          .pattern(/^[a-zA-Z0-9_\-\s]+$/)
+          .min(3)
+          .max(30)
+          .required(),
         // password: Joi.string().required(),
         // confirmPassword: Joi.string().required(),
         email: Joi.string().email().required(),
-        mobile: Joi.string().length(11).pattern(/^1[5-9]\d{9}$/).required(),
+        mobile: Joi.string()
+          .length(11)
+          .pattern(/^1[5-9]\d{9}$/)
+          .required(),
         role: Joi.string().required(),
         role_name: Joi.string().required(),
         nick_name: Joi.string(),
@@ -547,17 +444,14 @@ class UsersController {
       // 根据是否提供了 password 来选择合适的模式
       const schema = req.body.password ? addSchema : editSchema;
 
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
 
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
       // 对请求参数进行验证
@@ -571,32 +465,34 @@ class UsersController {
         role_name,
         nick_name,
         update_time,
-        status
-      } = value
+        status,
+      } = value;
 
       // 检查更新后的 username 是否已被其他用户使用
       let existingUsername;
       if (password) {
         // 如果是新增操作
         existingUsername = await usersModel.findOne({
-          username
+          username,
         });
       } else {
         // 如果是修改操作
         existingUsername = await usersModel.findOne({
           username,
           _id: {
-            $ne: req.body._id
-          }
+            $ne: req.body._id,
+          },
         });
       }
 
       if (existingUsername) {
         return res.status(400).json({
           code: 400,
-          message: password ? '新增失败，用户名已存在' : '更新失败，用户名已存在',
+          message: password
+            ? '新增失败，用户名已存在'
+            : '更新失败，用户名已存在',
           data: null,
-          status: false
+          status: false,
         });
       }
       // 用户信息
@@ -610,14 +506,15 @@ class UsersController {
         role_name,
         nick_name,
         status,
-        update_time: update_time || moment.utc(Date.now()).format('YYYY-MM-DD HH:mm:ss')
-      }
+        update_time:
+          update_time || moment.utc(Date.now()).format('YYYY-MM-DD HH:mm:ss'),
+      };
 
       // 新增需要密码
       if (password) {
         // 加密密码
         const HashedPassword = bcrypt.hashSync(password, 10);
-        updateData.password = HashedPassword
+        updateData.password = HashedPassword;
       }
 
       let result;
@@ -631,41 +528,45 @@ class UsersController {
             code: 200,
             message: '新增成功',
             data: {
-              username
+              username,
             },
-            status: true
+            status: true,
           });
         }
       } else {
         // 修改
-        result = await usersModel.findOneAndUpdate({
-          _id: req.body._id
-        }, updateData, {
-          new: true
-        })
+        result = await usersModel.findOneAndUpdate(
+          {
+            _id: req.body._id,
+          },
+          updateData,
+          {
+            new: true,
+          }
+        );
         if (!result) {
           return res.status(400).json({
             code: 400,
             message: '用户未找到',
             data: null,
-            status: false
+            status: false,
           });
         }
         res.status(200).json({
           code: 200,
           message: '用户信息更新成功',
           data: {
-            username
+            username,
           },
-          status: true
+          status: true,
         });
       }
     } catch (error) {
       console.error(error);
       return res.status(500).json({
         code: 500,
-        message: error ?? "服务器错误",
-        data: null
+        message: error ?? '服务器错误',
+        data: null,
       });
     }
   }
@@ -673,39 +574,36 @@ class UsersController {
   static async deleteUser(req, res) {
     try {
       // token 校验
-      await verifyToken(req, res)
+      await verifyToken(req, res);
       const schema = Joi.array().items(Joi.string().min(3).max(30).required());
       // 对请求参数进行验证
-      const {
-        error,
-        value
-      } = schema.validate(req.body);
+      const { error, value } = schema.validate(req.body);
       if (error) {
-        const errorMessage = handleError(error)
+        const errorMessage = handleError(error);
         return res.status(400).json({
           code: 400,
           message: errorMessage,
-          data: null
+          data: null,
         });
       }
 
-      const _ids = value
+      const _ids = value;
 
       // 执行删除操作
       const result = await usersModel.deleteMany({
         _id: {
-          $in: _ids
-        }
+          $in: _ids,
+        },
       });
 
-      console.log('result', result)
+      console.log('result', result);
 
       if (result.deletedCount === 0) {
         return res.status(404).json({
           code: 404,
           message: '未找到任何匹配的用户',
           data: null,
-          status: false
+          status: false,
         });
       }
 
@@ -713,20 +611,19 @@ class UsersController {
         code: 200,
         message: '用户删除成功',
         data: {
-          deletedCount: result.deletedCount
+          deletedCount: result.deletedCount,
         },
-        status: true
+        status: true,
       });
-
     } catch (error) {
-      const errorMessage = handleServerError(error)
+      const errorMessage = handleServerError(error);
       return res.status(500).json({
         code: 500,
-        message: errorMessage ?? "服务器错误",
-        data: null
+        message: errorMessage ?? '服务器错误',
+        data: null,
       });
     }
   }
 }
 
-module.exports = UsersController
+module.exports = UsersController;

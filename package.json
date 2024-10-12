@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "npm run dev"
+    "dev": "nodemon server.js",
+    "lint": "eslint . --fix",
+    "start": "npm run dev",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "address": "^2.0.3",
@@ -25,6 +27,7 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.2",
+    "open": "^10.1.0",
     "ora": "^5.0.0",
     "sharp": "^0.33.4",
     "swagger-jsdoc": "^6.2.8",
@@ -34,10 +37,15 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
+    "@eslint/js": "^9.12.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.14.9",
     "@types/react": "^18.3.3",
-    "eslint": "^8"
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "globals": "^15.11.0",
+    "prettier": "^3.3.3"
   }
 }

@@ -35,16 +35,14 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
-
 ngOnChanges()
-  输入属性发生变化时，会调用
-  首次渲染前，以及后续每次输入属性更新时，都会调用
+输入属性发生变化时，会调用
+首次渲染前，以及后续每次输入属性更新时，都会调用
 ngOnInit()
-  初始化组件、指令（只调用一次），通常用于执行一次性的初始化操作，如订阅服务、加载数据等
+初始化组件、指令（只调用一次），通常用于执行一次性的初始化操作，如订阅服务、加载数据等
 ngDoCheck（）
-  检测组件、指令（每次变更检测时调用）
+检测组件、指令（每次变更检测时调用）
 ngAfterContentInit()
-  初始化内容（只调用一次）
+初始化内容（只调用一次）
 ngAfterContentChecked()
-  初始化内容（每次变更检测时调用）
-
+初始化内容（每次变更检测时调用）

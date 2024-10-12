@@ -1,4 +1,4 @@
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
 // const moment = require('moment')
 const bcrypt = require('bcryptjs');
 
@@ -6,18 +6,18 @@ const UsersSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   create_time: {
     type: String,
   },
   update_time: {
     type: Date,
-    default: Date.now
+    default: Date.now,
   },
   email: String,
   mobile: String,
@@ -25,17 +25,18 @@ const UsersSchema = new mongoose.Schema({
   role_name: String,
   avatar: {
     type: String,
-    default: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg'
+    default:
+      'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
   },
   nick_name: {
     type: String,
-    default: ''
+    default: '',
   },
   status: {
     type: Boolean,
-    default: true
+    default: true,
   },
-  id: { type: String }
+  id: { type: String },
 });
 
 // 在Schema中添加方法

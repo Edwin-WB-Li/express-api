@@ -2,13 +2,8 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const Joi = require('joi'); // 引入 Joi
-const {
-  handleError,
-  handleServerError
-} = require('../utils/index.js');
-const {
-  verifyToken
-} = require('../utils/');
+const { handleError, handleServerError } = require('../utils/index.js');
+const { verifyToken } = require('../utils/');
 // const chalk = require('chalk')
 
 // 配置 SMTP 运输对象
@@ -20,13 +15,13 @@ const transporter = nodemailer.createTransport({
   port: 465,
   // port: 587,
   secure: true, // 对于端口 465 必须启用安全连接
-  // secure: false, 
+  // secure: false,
   auth: {
     user: 'edwin.wb.li@qq.com', // 你的邮箱地址
-    pass: 'frskvnbojzmadfie' // 密码或应用密码
+    pass: 'frskvnbojzmadfie', // 密码或应用密码
     // user: '15277019572@163.com', // 你的邮箱地址
     // pass: 'BWcLAqDrtqQE7raV' // 密码或应用密码
-  }
+  },
 });
 
 // 存储验证码的 Map
@@ -45,26 +40,21 @@ router.post('/send-verification-code', async (req, res) => {
     // await verifyToken(req, res)
     // 入参校验
     const schema = Joi.object({
-      email: Joi.string().email().required()
+      email: Joi.string().email().required(),
     });
 
-    const {
-      error,
-      value
-    } = schema.validate(req.body);
+    const { error, value } = schema.validate(req.body);
 
     if (error) {
-      const errorMessage = handleError(error)
+      const errorMessage = handleError(error);
       return res.status(400).json({
         code: 400,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
 
-    const {
-      email
-    } = value;
+    const { email } = value;
 
     // 生成验证码
     const verificationCode = generateVerificationCode();
@@ -83,33 +73,33 @@ router.post('/send-verification-code', async (req, res) => {
       // 文本内容
       text: `您的验证码是：${verificationCode}`,
       // HTML 内容
-      html: `<p>您的验证码是：<b>${verificationCode}</b></p>`
+      html: `<p>您的验证码是：<b>${verificationCode}</b></p>`,
     };
 
     // 发送验证码邮件
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        const errorMessage = handleServerError(error)
+        const errorMessage = handleServerError(error);
         console.error('Error sending email:', error);
         return res.status(400).json({
           code: 400,
           message: errorMessage || 'Failed to send verification code',
-          data: null
+          data: null,
         });
       }
       console.log(`Verification code sent: ${info.messageId}`);
       res.json({
         code: 200,
         message: 'Verification code sent successfully',
-        data: `验证码已发送至：${email},请注意查收，切勿随意泄露`
+        data: `验证码已发送至：${email},请注意查收，切勿随意泄露`,
       });
     });
   } catch (error) {
-    const errorMessage = handleServerError(error)
+    const errorMessage = handleServerError(error);
     res.status(500).json({
       code: 500,
       message: errorMessage || 'Internal Server Error',
-      data: null
+      data: null,
     });
   }
 });
@@ -122,27 +112,21 @@ router.post('/verify-verification-code', async (req, res) => {
     // 入参校验
     const schema = Joi.object({
       email: Joi.string().email().required(),
-      code: Joi.string().required()
+      code: Joi.string().required(),
     });
 
-    const {
-      error,
-      value
-    } = schema.validate(req.body);
+    const { error, value } = schema.validate(req.body);
 
     if (error) {
-      const errorMessage = handleError(error)
+      const errorMessage = handleError(error);
       return res.status(400).json({
         code: 400,
         message: errorMessage,
-        data: null
+        data: null,
       });
     }
 
-    const {
-      email,
-      code
-    } = value;
+    const { email, code } = value;
 
     const storedCode = verificationCodes.get(email);
 
@@ -150,7 +134,7 @@ router.post('/verify-verification-code', async (req, res) => {
       return res.status(400).json({
         code: 400,
         message: 'Verification code not found',
-        data: null
+        data: null,
       });
     }
 
@@ -160,21 +144,21 @@ router.post('/verify-verification-code', async (req, res) => {
       res.json({
         code: 200,
         message: 'Verification code verified successfully',
-        data: storedCode
+        data: storedCode,
       });
     } else {
       res.status(400).json({
         code: 400,
         message: 'Invalid verification code',
-        data: null
-      })
+        data: null,
+      });
     }
   } catch (error) {
-    const errorMessage = handleServerError(error)
+    const errorMessage = handleServerError(error);
     res.status(500).json({
       code: 500,
       errorMessage: errorMessage || 'Internal Server Error',
-      data: null
+      data: null,
     });
   }
 });

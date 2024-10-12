@@ -8,14 +8,13 @@ const chalk = require('chalk');
 // const UAParser = require('ua-parser-js');
 
 router.get('/districts', (req, res) => {
-
   // 创建一个 ora 旋转加载指示器
   const spinner = ora({
     text: '获取本地 IP 地址...',
     color: 'cyan',
     interval: 80,
     isSilent: false,
-    spinner: 'dots'
+    spinner: 'dots',
   }).start();
   // 获取本地 IP 地址
   const ipAddress = address.ip();
@@ -47,14 +46,15 @@ router.get('/districts', (req, res) => {
   const geoApiUrl = `https://ipapi.co/${ipAddress}/json/`;
   // const geoApiUrl = `http://ip-api.com/json/${ipAddress}`;
 
-  axios.get(geoApiUrl)
-    .then(response => {
+  axios
+    .get(geoApiUrl)
+    .then((response) => {
       const locationData = response.data;
       if (!locationData || Object.keys(locationData).length === 0) {
         spinner.fail(chalk.red('无法获取地理位置信息: API 返回空数据'));
         return res.status(500).json({
           code: 500,
-          message: '无法获取地理位置信息: API 返回空数据'
+          message: '无法获取地理位置信息: API 返回空数据',
         });
       }
       spinner.succeed(chalk.green(`地理位置信息:`));
@@ -62,15 +62,15 @@ router.get('/districts', (req, res) => {
       res.status(200).json({
         code: 200,
         message: 'success',
-        data: locationData
-      })
+        data: locationData,
+      });
     })
-    .catch(error => {
+    .catch((error) => {
       spinner.fail(chalk.red('无法获取地理位置信息:', error.message));
       return res.status(500).json({
         code: 500,
         message: '无法获取地理位置信息:',
-        error: error.message
+        error: error.message,
       });
     });
 });
