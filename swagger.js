@@ -1,0 +1,48 @@
+const path = require('path');
+const express = require('express');
+const swaggerUI = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc'); // 修改 `swaggerDoc` 为 `swaggerJsDoc`
+const relativePath = path.resolve(__dirname, 'routes', 'users.js');
+// 配置 swagger-jsdoc 选项
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      // 标题信息
+      title: '企业管理后台API文档', 
+      version: '1.0.0',
+      description: '企业级管理后台共用接口API文档',
+    },
+    servers: [{
+        url: "http://localhost:3000"
+      }, // 根据实际情况调整
+    ],
+  },
+  // 去指定路由下收集 swagger 注释
+  apis: ['./routes/*.js'], // 注意路径是否正确
+};
+
+// 使用 swaggerJsDoc 生成规范的 swaggerSpec
+const swaggerSpec = swaggerJsDoc(options);
+
+// 定义 `swaggerJson` 方法，用于返回 swagger 文档的 JSON 数据
+const swaggerJson = function (req, res) {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(swaggerSpec);
+};
+
+// 定义 `swaggerInstall` 方法，用于将 swagger 安装到应用中
+const swaggerInstall = function (app) {
+  if (!app) {
+    app = express(); // 如果没有传入 app，则创建一个新的 express 实例
+  }
+
+  // 开放 JSON 格式的文档接口
+  app.get('/api/v1/swagger.json', swaggerJson);
+
+  // 使用 swaggerSpec 生成 swagger 文档页面，并开放在指定路由 '/swagger'
+  app.use('/api/v1/swagger', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+};
+
+// 导出 `swaggerInstall` 方法供其他模块使用
+module.exports = swaggerInstall;
