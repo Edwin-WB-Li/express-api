@@ -80,8 +80,6 @@ server.use(`${version}/comments`, commentsRouter);
 server.use(`${version}`, districtsRouter);
 server.use(`${version}`, verificationCodeRouter);
 
-// let openedSwagger = false; // 初始化标志变量为 false
-
 // 注册swagger
 swaggerInstall(server);
 // 标志文件路径
@@ -93,16 +91,6 @@ const hasOpenedSwagger = () => fs.existsSync(openFlagPath);
 // 写入标志文件
 const markSwaggerAsOpened = () =>
   fs.writeFileSync(openFlagPath, 'swagger opened', 'utf-8');
-
-// 删除旧的标志文件，确保每次启动时重置状态
-// const resetSwaggerFlag = () => {
-//   if (fs.existsSync(openFlagPath)) {
-//     fs.unlinkSync(openFlagPath); // 删除旧的标志文件
-//   }
-// };
-
-// // 初始化时重置标志
-// resetSwaggerFlag();
 
 // 优雅关闭函数
 const gracefulShutdown = () => {
@@ -138,7 +126,6 @@ server.listen(port, async (err) => {
 
   // 如果 Swagger 尚未打开过，则打开一次
   if (!hasOpenedSwagger()) {
-    // if (!openedSwagger) {
     try {
       const { default: open } = await import('open'); // 动态导入 open 模块
       await open(`http://localhost:${port}/api/v1/swagger-doc`); // 打开 Swagger 文档
