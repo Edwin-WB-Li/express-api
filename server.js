@@ -30,7 +30,12 @@ const commentsRouter = require('./routes/comments');
 const port = process.env.PORT || 3000;
 
 // MongoDB 连接
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/node';
+
+const url =
+  'mongodb+srv://edwin-wb-li:nVZFU5nwD28sDkdk@cluster0.b54wu.mongodb.net/node?retryWrites=true&w=majority&appName=Cluster0';
+
+const MONGODB_URI =
+  process.env.MONGODB_URL || url || 'mongodb://127.0.0.1:27017/node';
 mongoose
   .connect(MONGODB_URI)
   .then(() =>
