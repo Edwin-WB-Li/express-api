@@ -32,7 +32,7 @@ const port = process.env.PORT || 3000;
 // MongoDB 连接
 
 const url =
-  'mongodb+srv://edwin-wb-li:nVZFU5nwD28sDkdk@cluster0.b54wu.mongodb.net/node?retryWrites=true&w=majority&appName=Cluster0';
+  'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node';
 
 const MONGODB_URI =
   process.env.MONGODB_URL || url || 'mongodb://127.0.0.1:27017/node';
