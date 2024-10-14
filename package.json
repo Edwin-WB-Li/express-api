@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon server.js",
+    "dev": "nodemon index.js",
     "lint": "eslint . --fix",
     "start": "npm run dev",
     "format": "prettier --write ."
@@ -16,6 +16,7 @@
     "cors": "^2.8.5",
     "crypto": "^1.0.1",
     "device": "^0.3.12",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "express-ip": "^1.0.4",
     "geolib": "^3.3.4",

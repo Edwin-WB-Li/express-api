@@ -140,7 +140,7 @@ server.listen(port, async (err) => {
       spinner.fail(chalk.red('Error opening Swagger documentation:', err));
     }
   }
-  spinner.succeed(chalk.green(`Ready on http://localhost:${port}`));
+  spinner.succeed(chalk.green(`Local Running on http://localhost:${port}`));
   spinner.succeed(
     chalk.green(`Swagger Document: http://localhost:${port}/api/v1/swagger-doc`)
   );
