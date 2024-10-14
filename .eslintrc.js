@@ -11,9 +11,10 @@ module.exports = {
     // 在这里可以添加自定义规则
     'prettier/prettier': 'error', // 将 Prettier 的问题作为 ESLint 错误
     'no-unused-vars': 'off', // 或者使用 0
+    parser: 'babel-eslint',
   },
   parserOptions: {
-    ecmaVersion: 2020, // 允许使用最新的 ECMAScript 特性
+    ecmaVersion: 'latest', // 允许使用最新的 ECMAScript 特性
   },
   // ...其他配置
   overrides: [
