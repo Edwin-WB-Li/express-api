@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="icon" href="./static/favicon.ico" />
+  <title>Express API</title>
+  <style>
+    html,
+    body {
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      /* background: #ffffff; */
+      background: linear-gradient(to left bottom, hsl(200, 100%, 85%) 0%, hsl(119, 100%, 85%) 100%);
+      text-align: center;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    * {
+      color: rgb(100, 100, 100);
+      margin: 0;
+      padding: 0;
+    }
+
+    a {
+      color: #42b983;
+    }
+
+    ul,
+    li {
+      margin: 0;
+    }
+
+    ul {
+      margin-left: -40px;
+      line-height: 30px;
+    }
+
+    li {
+      list-style: none;
+    }
+
+    .wrap {
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      margin-left: -50%;
+    }
+
+    .wrap-title {
+      font-size: 60px;
+      /* text-transform: lowercase; */
+      margin-bottom: 20px
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1 class="wrap-title">Express Api</h1>
+    <div>
+      当你看到这个页面时,这个服务已经成功跑起来了~
+      <a href="/api/v1/swagger-doc">查看文档</a>
+    </div>
+  </div>
+</body>
+
+</html>

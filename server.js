@@ -27,10 +27,11 @@ const districtsRouter = require('./routes/districts');
 const verificationCodeRouter = require('./routes/verificationCode');
 const commentsRouter = require('./routes/comments');
 
+// 端口
 const port = process.env.PORT || 3000;
 
 // MongoDB 连接
-
+// 连接 MongoDB Atlas 集群
 const url =
   'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node';
 
@@ -58,11 +59,15 @@ server.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
-// server.use(express.static(path.resolve(__dirname, `static`)));
+
 // 设置静态文件目录，并指定路径前缀
 server.use('/static', express.static(path.resolve(__dirname, 'static')));
 
-// app.prepare().then(() => {
+// 处理根路径请求，发送 index.html 文件
+server.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 server.use(bodyParser.json());
 server.use(
   bodyParser.urlencoded({
