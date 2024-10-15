@@ -408,7 +408,7 @@ class UsersController {
     }
   }
   // 修改 或 新增 用户信息  POST
-  static async editUserInfo(req, res) {
+  static async addOrEditUserInfo(req, res) {
     try {
       // token 校验
       await verifyToken(req, res);

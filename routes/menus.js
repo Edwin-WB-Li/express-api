@@ -92,6 +92,109 @@ const MenuController = require('../controller/menus/menus');
  */
 router.get('/getMenuListByRole', MenuController.getMenuListByRole);
 // 获取所有菜单列表
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     MenuListRequest:
+ *       type: object
+ *       properties:
+ *         menuName:
+ *           type: string
+ *           description: 菜单名称
+ *           example: "Dashboard"
+ *         role:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: 角色数组
+ *           example: ["admin", "user"]
+ *         visible:
+ *           type: boolean
+ *           description: 是否可见
+ *           example: true
+ *
+ *     MenuListResponse:
+ *       type: object
+ *       properties:
+ *         code:
+ *           type: integer
+ *           description: 响应状态码
+ *         message:
+ *           type: string
+ *           description: 响应消息
+ *         data:
+ *           type: object
+ *           properties:
+ *             list:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Menu'
+ *
+ *     Menu:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: 菜单 ID
+ *         menuName:
+ *           type: string
+ *           description: 菜单名称
+ *         visible:
+ *           type: boolean
+ *           description: 是否可见
+ *         role:
+ *           type: array
+ *           items:
+ *             type: string
+ *           description: 角色数组
+ *
+ * /api/v1/menus:
+ *   post:
+ *     summary: 获取所有菜单列表
+ *     description: 获取所有菜单列表，支持模糊查询和角色过滤
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/MenuListRequest'
+ *     security:
+ *       - apiKey: []
+ *     responses:
+ *       200:
+ *         description: 成功响应
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/MenuListResponse'
+ *       400:
+ *         description: 参数验证失败
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ */
 router.post('/getAllMenuList', MenuController.getAllMenuList);
 // 编辑
 router.post('/addAndEditMenuListInfo', MenuController.addAndEditMenuListInfo);

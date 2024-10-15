@@ -20,13 +20,23 @@ const options = {
     ],
     components: {
       securitySchemes: {
-        bearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT', // 可选，指定 token 的格式
+        // bearerAuth: {
+        //   type: 'http',
+        //   scheme: 'bearer',
+        //   bearerFormat: 'JWT', // 可选，指定 token 的格式
+        // },
+        apiKey: {
+          type: 'apiKey',
+          name: 'Authorization',
+          in: 'header',
         },
       },
     },
+    security: [
+      {
+        apiKey: [],
+      },
+    ],
   },
   // 去指定路由下收集 swagger 注释
   apis: ['./routes/*.js'], // 注意路径是否正确

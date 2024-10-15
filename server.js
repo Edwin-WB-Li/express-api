@@ -75,12 +75,6 @@ server.use(
   })
 );
 
-// 全局错误处理中间件
-server.use((err, _req, res, next) => {
-  spinner.fail(chalk.red(err?.stack));
-  res.status(500).send(err?.stack ?? 'Something broke!');
-});
-
 server.use(`${version}/good`, goodsRouter);
 server.use(`${version}/user`, usersRouter);
 server.use(`${version}/file`, filesdRouter);
@@ -92,6 +86,29 @@ server.use(`${version}`, verificationCodeRouter);
 
 // 注册swagger
 swaggerInstall(server);
+
+// 处理未找到的路由
+server.use((req, res, next) => {
+  // 如果是 API 请求且未找到对应的路由，则返回 404 页面
+  if (req.url.startsWith(version)) {
+    res.sendFile(path.join(__dirname, '404.html'));
+  } else {
+    next();
+  }
+});
+
+// 处理不是以 `/api/v1` 开头但实际也不存在的 API
+server.use((_req, res) => {
+  // 如果不是以 `/api/v1` 开头且未找到对应的路由，则返回 404 页面
+  res.sendFile(path.join(__dirname, '404.html'));
+});
+
+// 全局错误处理中间件
+server.use((err, _req, res, next) => {
+  spinner.fail(chalk.red(err?.stack));
+  res.status(500).send(err?.stack ?? 'Something broke!');
+});
+
 // 标志文件路径
 const openFlagPath = path.resolve(__dirname, '.swagger-opened');
 
