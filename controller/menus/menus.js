@@ -209,7 +209,7 @@ class MenuController {
     }
   }
   // 修改 菜单详情  POST
-  static async addAndEditMenuListInfo(req, res) {
+  static async editMenuListInfo(req, res) {
     try {
       // token 校验
       await verifyToken(req, res);

@@ -673,6 +673,78 @@ router.post('/addOrEditUserInfo', UserController.addOrEditUserInfo);
  */
 router.get('/getUserInfoById/:id', UserController.getUserInfoById);
 // 删除用户
+/**
+ * @swagger
+ * /api/v1/user/deleteUser:
+ *   post:
+ *     summary: 删除用户接口
+ *     description: 删除用户,传 id 可以 传多个
+ *     tags: [User]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *                type: string
+ *                example: '1'
+ *     responses:
+ *       200:
+ *         description: 删除 成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "删除成功"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     deletedCount:
+ *                        type: number
+ *                        example: 1
+ *       400:
+ *         description: 客户端错误(入参有误)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "入参有误"
+ *                 data:
+ *                   type: null
+ *                   example: null
+ *                 status:
+ *                   type: boolean
+ *                   example: false
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 data:
+ *                   type: null
+ *                   example: null
+ */
 router.post('/deleteUser', UserController.deleteUser);
 
 module.exports = router;

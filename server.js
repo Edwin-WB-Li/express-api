@@ -41,15 +41,15 @@ mongoose
   .connect(MONGODB_URI)
   .then(() =>
     spinner.succeed(
-      chalk.green(`MongoDB连接成功: Connected to MongoDB with Mongoose`)
+      chalk.green(`MongoDB连接成功: Connected to MongoDB Atlas with Mongoose`)
     )
   )
   .catch((err) => spinner.fail(chalk.red('MongoDB连接失败:', err)));
 
-const server = express();
+const app = express();
 
 // 在其他中间件之前启用CORS
-server.use(
+app.use(
   cors({
     origin: [
       'https://next-express-project-lake.vercel.app',
@@ -61,34 +61,34 @@ server.use(
 );
 
 // 设置静态文件目录，并指定路径前缀
-server.use('/static', express.static(path.resolve(__dirname, 'static')));
+app.use('/static', express.static(path.resolve(__dirname, 'static')));
 
 // 处理根路径请求，发送 index.html 文件
-server.get('/', (_req, res) => {
+app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-server.use(bodyParser.json());
-server.use(
+app.use(bodyParser.json());
+app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 );
 
-server.use(`${version}/good`, goodsRouter);
-server.use(`${version}/user`, usersRouter);
-server.use(`${version}/file`, filesdRouter);
-server.use(`${version}/sysPermission`, menusRouter);
-server.use(`${version}/dictionaries`, dictionariesRouter);
-server.use(`${version}/comments`, commentsRouter);
-server.use(`${version}`, districtsRouter);
-server.use(`${version}`, verificationCodeRouter);
+app.use(`${version}/good`, goodsRouter);
+app.use(`${version}/user`, usersRouter);
+app.use(`${version}/file`, filesdRouter);
+app.use(`${version}/sysPermission`, menusRouter);
+app.use(`${version}/dictionaries`, dictionariesRouter);
+app.use(`${version}/comments`, commentsRouter);
+app.use(`${version}`, districtsRouter);
+app.use(`${version}`, verificationCodeRouter);
 
 // 注册swagger
-swaggerInstall(server);
+swaggerInstall(app);
 
 // 处理未找到的路由
-server.use((req, res, next) => {
+app.use((req, res, next) => {
   // 如果是 API 请求且未找到对应的路由，则返回 404 页面
   if (req.url.startsWith(version)) {
     res.sendFile(path.join(__dirname, '404.html'));
@@ -98,13 +98,13 @@ server.use((req, res, next) => {
 });
 
 // 处理不是以 `/api/v1` 开头但实际也不存在的 API
-server.use((_req, res) => {
+app.use((_req, res) => {
   // 如果不是以 `/api/v1` 开头且未找到对应的路由，则返回 404 页面
   res.sendFile(path.join(__dirname, '404.html'));
 });
 
 // 全局错误处理中间件
-server.use((err, _req, res, next) => {
+app.use((err, _req, res, next) => {
   spinner.fail(chalk.red(err?.stack));
   res.status(500).send(err?.stack ?? 'Something broke!');
 });
@@ -120,8 +120,8 @@ const markSwaggerAsOpened = () =>
   fs.writeFileSync(openFlagPath, 'swagger opened', 'utf-8');
 
 // 优雅关闭函数
-const gracefulShutdown = () => {
-  server.close(() => {
+const gracefulShutdown = (httpServer) => {
+  httpServer.close(() => {
     console.log(chalk.green('HTTP server closed'));
     mongoose.connection.close(false, () => {
       console.log(chalk.green('MongoDB connection closed'));
@@ -133,7 +133,7 @@ const gracefulShutdown = () => {
 // 处理未捕获的异常
 process.on('uncaughtException', (err) => {
   spinner.fail(chalk.red('Uncaught Exception: ', err));
-  gracefulShutdown();
+  gracefulShutdown(httpServer);
 });
 
 // 处理未处理的 Promise 拒绝
@@ -141,11 +141,11 @@ process.on('unhandledRejection', (reason, promise) => {
   spinner.fail(
     chalk.red('Unhandled Rejection at: ', promise, 'reason: ', reason)
   );
-  gracefulShutdown();
+  gracefulShutdown(httpServer);
 });
 
 // 监听端口
-server.listen(port, async (err) => {
+const httpServer = app.listen(port, async (err) => {
   if (err) {
     spinner.fail(chalk.red('Error starting server:', err));
     return;
