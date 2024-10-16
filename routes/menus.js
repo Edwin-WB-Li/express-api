@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const commonSwaggerResponses = require('../utils/');
 // 假设有一个 MenuController来处理业务逻辑
 const MenuController = require('../controller/menus/menus');
 

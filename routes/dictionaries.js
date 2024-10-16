@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-
-// 假设有一个 DictionariesController来处理业务逻辑
 const DictionariesController = require('../controller/dictionaries/dictionaries');
 
 // 根据 参数 获取 下拉框数据

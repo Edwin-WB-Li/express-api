@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-
 const CommentsController = require('../controller/comments/comments');
+
 /**
  * 根据类型获取 commentslist
  * @swagger
@@ -75,6 +75,176 @@ const CommentsController = require('../controller/comments/comments');
  *                   example: null
  */
 router.get('/getCommentsList', CommentsController.getCommentsList);
+/**
+ * @swagger
+ * /api/v1/comments/replayToComments:
+ *   post:
+ *     summary: 新增评论回复
+ *     description: 新增或更新评论回复
+ *     tags: [Comments]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: array
+ *             items:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                   description: 评论ID
+ *                   example: "123456"
+ *                 author:
+ *                   type: string
+ *                   description: 作者
+ *                   example: "张三"
+ *                 avatar:
+ *                   type: string
+ *                   description: 头像URL
+ *                   example: "https://example.com/avatar.jpg"
+ *                 content:
+ *                   type: string
+ *                   description: 评论内容
+ *                   example: "这是一条评论"
+ *                 likes:
+ *                   type: integer
+ *                   description: 点赞数
+ *                   example: 10
+ *                 isLikes:
+ *                   type: boolean
+ *                   description: 是否点赞
+ *                   example: true
+ *                 isDislikes:
+ *                   type: boolean
+ *                   description: 是否点踩
+ *                   example: false
+ *                 dislikes:
+ *                   type: integer
+ *                   description: 点踩数
+ *                   example: 2
+ *                 children:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Comment'
+ *                 datetime:
+ *                   type: string
+ *                   format: date-time
+ *                   description: 评论时间
+ *                   example: "2023-10-01T12:00:00Z"
+ *                 displayTime:
+ *                   type: string
+ *                   description: 显示时间
+ *                   example: "2023-10-01 12:00"
+ *                 commentId:
+ *                   type: string
+ *                   description: 父评论ID
+ *                   example: "678901"
+ *     responses:
+ *       200:
+ *         description: 评论成功
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "评论成功"
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Comment'
+ *       400:
+ *         description: 客户端错误(入参有误)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 400
+ *                 message:
+ *                   type: string
+ *                   example: "入参有误"
+ *                 data:
+ *                   type: null
+ *                   example: null
+ *       500:
+ *         description: 服务器内部错误
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 code:
+ *                   type: integer
+ *                   example: 500
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 data:
+ *                   type: null
+ *                   example: null
+ * components:
+ *   schemas:
+ *     Comment:
+ *       type: object
+ *       properties:
+ *         id:
+ *           type: string
+ *           description: 评论ID
+ *           example: "123456"
+ *         author:
+ *           type: string
+ *           description: 作者
+ *           example: "张三"
+ *         avatar:
+ *           type: string
+ *           description: 头像URL
+ *           example: "https://example.com/avatar.jpg"
+ *         content:
+ *           type: string
+ *           description: 评论内容
+ *           example: "这是一条评论"
+ *         likes:
+ *           type: integer
+ *           description: 点赞数
+ *           example: 10
+ *         isLikes:
+ *           type: boolean
+ *           description: 是否点赞
+ *           example: true
+ *         isDislikes:
+ *           type: boolean
+ *           description: 是否点踩
+ *           example: false
+ *         dislikes:
+ *           type: integer
+ *           description: 点踩数
+ *           example: 2
+ *         children:
+ *           type: array
+ *           items:
+ *             $ref: '#/components/schemas/Comment'
+ *         datetime:
+ *           type: string
+ *           format: date-time
+ *           description: 评论时间
+ *           example: "2023-10-01T12:00:00Z"
+ *         displayTime:
+ *           type: string
+ *           description: 显示时间
+ *           example: "2023-10-01 12:00"
+ *         commentId:
+ *           type: string
+ *           description: 父评论ID
+ *           example: "678901"
+ */
 router.post('/replayToComments', CommentsController.replayToComments);
 
 module.exports = router;

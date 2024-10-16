@@ -43,6 +43,7 @@ exports.verifyToken = function (req, res) {
     // 接收 token
     const token = req.headers.authorization;
     if (!token) {
+      console.error(chalk.red('No token provided'));
       return res.status(401).json({
         code: 401,
         message: 'No token provided',
@@ -54,6 +55,7 @@ exports.verifyToken = function (req, res) {
       var decoded = jwt.verify(token, 'token');
       // 检查是否过期
       if (decoded.exp < Math.floor(Date.now() / 1000)) {
+        console.error(chalk.red('Token has expired'));
         res.status(401).json({
           code: 401,
           message: 'Token has expired',
@@ -63,9 +65,10 @@ exports.verifyToken = function (req, res) {
       }
       resolve(decoded.data);
     } catch (err) {
+      console.error(chalk.red(err));
       res.status(401).json({
         code: 401,
-        message: 'token invaild',
+        message: err || 'token invaild',
         data: null,
       });
     }
