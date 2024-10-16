@@ -55,6 +55,7 @@ router.get('/districts', (req, res) => {
         return res.status(500).json({
           code: 500,
           message: '无法获取地理位置信息: API 返回空数据',
+          data: null,
         });
       }
       spinner.succeed(chalk.green(`地理位置信息:`));
@@ -70,7 +71,7 @@ router.get('/districts', (req, res) => {
       return res.status(500).json({
         code: 500,
         message: '无法获取地理位置信息:',
-        error: error.message,
+        message: error.message,
       });
     });
 });

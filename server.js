@@ -53,6 +53,7 @@ app.use(
   cors({
     origin: [
       'https://next-express-project-lake.vercel.app',
+      'https://express-api-livid.vercel.app',
       'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // 明确列出允许的方法
