@@ -12,7 +12,7 @@ const crypto = require('crypto');
 // 用于处理非表单的文件数据流
 const upload = multer({
   // 指定上传后的文件的存放位置
-  dest: path.resolve(__dirname, `../static`),
+  dest: path.resolve(__dirname, `../../static`),
 });
 const cpUpload = upload.fields([
   {
@@ -133,7 +133,7 @@ router.post('/upload', cpUpload, (req, res) => {
       message: 'No files uploaded',
     });
   }
-  const staticDir = path.resolve(__dirname, '../static');
+  const staticDir = path.resolve(__dirname, '../../static');
   // 确保目标目录存在
   ensureDirectoryExists(staticDir);
 
@@ -271,27 +271,31 @@ router.post('/upload', cpUpload, (req, res) => {
 router.post('/download', (req, res) => {
   console.log(req.body);
   const { fileName } = req.body;
-  const filePath = path.resolve(__dirname, `../static/${fileName}`);
+  const filePath = path.resolve(__dirname, `../../static/${fileName}`);
   // const filePath = `/static/${fileName}`
-  // 第一个参数是文件的绝对路径或相对路径。
-  // 第二个参数是可选的，指定下载时的文件名。
-  // 可以提供一个回调函数来处理可能发生的错误。
-  res.download(filePath, `${fileName}`, (err) => {
-    if (err) {
-      console.error(chalk.red('文件下载失败:', err));
-      return res.status(500).json({
-        code: 500,
-        message: err || 'File download error',
-        data: null,
-      });
-    } else {
-      return res.status(200).json({
-        code: 200,
-        message: 'success',
-        data: filePath,
-      });
-    }
-  });
+  try {
+    // 第一个参数是文件的绝对路径或相对路径。
+    // 第二个参数是可选的，指定下载时的文件名。
+    // 可以提供一个回调函数来处理可能发生的错误。
+    res.download(filePath, `${fileName}`, (err) => {
+      if (err) {
+        console.error(chalk.red('文件下载失败:', err));
+        return res.status(500).json({
+          code: 500,
+          message: err || 'File download error',
+          data: null,
+        });
+      }
+    });
+  } catch (error) {
+    console.error(chalk.red('文件下载失败:', error));
+    // 如果发生同步错误，返回错误信息
+    res.status(500).json({
+      code: 500,
+      message: error?.message || 'File download error',
+      data: null,
+    });
+  }
 });
 
 module.exports = router;

@@ -15,11 +15,10 @@ const spinner = ora({
 
 // 引入swagger
 const swaggerInstall = require('./swagger');
-// 导入用户路由
 const version = '/api/v1';
+// 导入路由
 const goodsRouter = require('./routes/goods');
 const usersRouter = require('./routes/users');
-// const uploadRouter = require('./routes/upload1');
 const filesdRouter = require('./routes/files');
 const menusRouter = require('./routes/menus');
 const dictionariesRouter = require('./routes/dictionaries');
@@ -62,11 +61,11 @@ app.use(
 );
 
 // 设置静态文件目录，并指定路径前缀
-app.use('/static', express.static(path.resolve(__dirname, 'static')));
+app.use('/static', express.static(path.resolve(__dirname, '../static')));
 
 // 处理根路径请求，发送 index.html 文件
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.use(bodyParser.json());
@@ -75,6 +74,34 @@ app.use(
     extended: true,
   })
 );
+
+// 添加中间件，记录请求的路径和方法
+app.use((req, res, next) => {
+  const startTime = Date.now();
+  const method = req.method;
+  const url = req.url;
+
+  // 记录请求方式和路径
+  spinner.info(chalk.blue(`Request:  ${method} ${url}`));
+
+  // 记录响应结束
+  const originalSend = res.send;
+  res.send = function (body) {
+    const endTime = Date.now();
+    const responseTime = endTime - startTime;
+    const status = res.statusCode;
+    // 记录响应结果
+    spinner.info(
+      chalk.blue(
+        // `Response: ${method} ${url} - Status: ${status} - Time: ${responseTime}ms`
+        `Response: Status: ${status} - Time: ${responseTime}ms`
+      )
+    );
+    // 调用原始的 send 方法
+    originalSend.call(res, body);
+  };
+  next();
+});
 
 app.use(`${version}/good`, goodsRouter);
 app.use(`${version}/user`, usersRouter);
@@ -92,7 +119,7 @@ swaggerInstall(app);
 app.use((req, res, next) => {
   // 如果是 API 请求且未找到对应的路由，则返回 404 页面
   if (req.url.startsWith(version)) {
-    res.sendFile(path.join(__dirname, '404.html'));
+    res.sendFile(path.join(__dirname, '../public/404.html'));
   } else {
     next();
   }
@@ -101,17 +128,18 @@ app.use((req, res, next) => {
 // 处理不是以 `/api/v1` 开头但实际也不存在的 API
 app.use((_req, res) => {
   // 如果不是以 `/api/v1` 开头且未找到对应的路由，则返回 404 页面
-  res.sendFile(path.join(__dirname, '404.html'));
+  res.sendFile(path.join(__dirname, '../public/404.html'));
 });
 
 // 全局错误处理中间件
 app.use((err, _req, res, next) => {
   spinner.fail(chalk.red(err?.stack));
   res.status(500).send(err?.stack ?? 'Something broke!');
+  return;
 });
 
 // 标志文件路径
-const openFlagPath = path.resolve(__dirname, '.swagger-opened');
+const openFlagPath = path.resolve(__dirname, '../.swagger-opened');
 
 // 检查标志文件是否存在
 const hasOpenedSwagger = () => fs.existsSync(openFlagPath);
@@ -121,14 +149,17 @@ const markSwaggerAsOpened = () =>
   fs.writeFileSync(openFlagPath, 'swagger opened', 'utf-8');
 
 // 优雅关闭函数
-const gracefulShutdown = (httpServer) => {
-  httpServer.close(() => {
-    console.log(chalk.green('HTTP server closed'));
-    mongoose.connection.close(false, () => {
-      console.log(chalk.green('MongoDB connection closed'));
-      process.exit(0); // 关闭进程
-    });
-  });
+const gracefulShutdown = async (httpServer) => {
+  try {
+    await new Promise((resolve) => httpServer.close(resolve));
+    spinner.fail(chalk.red('HTTP server closed'));
+    await mongoose.connection.close();
+    spinner.fail(chalk.red('MongoDB connection closed'));
+    process.exit(0); // 关闭进程
+  } catch (err) {
+    console.error(chalk.red('Error during graceful shutdown:', err));
+    process.exit(1); // 强制关闭进程
+  }
 };
 
 // 处理未捕获的异常

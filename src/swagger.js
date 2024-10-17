@@ -39,14 +39,14 @@ const options = {
     ],
   },
   // 去指定路由下收集 swagger 注释
-  apis: ['./routes/*.js'], // 注意路径是否正确
+  apis: ['./src/routes/*.js'], // 注意路径是否正确
 };
 
 // 使用 swaggerJsDoc 生成规范的 swaggerSpec
 const swaggerSpec = swaggerJsDoc(options);
 
 // 定义 `swaggerJson` 方法，用于返回 swagger 文档的 JSON 数据
-const swaggerJson = function (req, res) {
+const swaggerJson = function (_req, res) {
   res.setHeader('Content-Type', 'application/json');
   res.send(swaggerSpec);
 };

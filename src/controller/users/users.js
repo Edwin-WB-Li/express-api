@@ -2,9 +2,13 @@
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const moment = require('moment');
-const { createToken, verifyToken } = require('../../utils/');
 const usersModel = require('../../models/users/usersModel.js');
-const { handleError, handleServerError } = require('../../utils/index.js');
+const {
+  createToken,
+  verifyToken,
+  handleError,
+  handleServerError,
+} = require('../../utils/');
 class UsersController {
   // 登录  POST
   static async login(req, res) {

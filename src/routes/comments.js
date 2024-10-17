@@ -190,60 +190,6 @@ router.get('/getCommentsList', CommentsController.getCommentsList);
  *                 data:
  *                   type: null
  *                   example: null
- * components:
- *   schemas:
- *     Comment:
- *       type: object
- *       properties:
- *         id:
- *           type: string
- *           description: 评论ID
- *           example: "123456"
- *         author:
- *           type: string
- *           description: 作者
- *           example: "张三"
- *         avatar:
- *           type: string
- *           description: 头像URL
- *           example: "https://example.com/avatar.jpg"
- *         content:
- *           type: string
- *           description: 评论内容
- *           example: "这是一条评论"
- *         likes:
- *           type: integer
- *           description: 点赞数
- *           example: 10
- *         isLikes:
- *           type: boolean
- *           description: 是否点赞
- *           example: true
- *         isDislikes:
- *           type: boolean
- *           description: 是否点踩
- *           example: false
- *         dislikes:
- *           type: integer
- *           description: 点踩数
- *           example: 2
- *         children:
- *           type: array
- *           items:
- *             $ref: '#/components/schemas/Comment'
- *         datetime:
- *           type: string
- *           format: date-time
- *           description: 评论时间
- *           example: "2023-10-01T12:00:00Z"
- *         displayTime:
- *           type: string
- *           description: 显示时间
- *           example: "2023-10-01 12:00"
- *         commentId:
- *           type: string
- *           description: 父评论ID
- *           example: "678901"
  */
 router.post('/replayToComments', CommentsController.replayToComments);
 

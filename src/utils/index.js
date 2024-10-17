@@ -22,7 +22,7 @@ exports.handleServerError = function (error) {
   return errorMessage;
 };
 
-// 生成token
+// 生成 token
 exports.createToken = function (data, expiresInHours = 24) {
   const nowInSeconds = Math.floor(Date.now() / 1000);
   return jwt.sign(
@@ -37,7 +37,7 @@ exports.createToken = function (data, expiresInHours = 24) {
     'token'
   );
 };
-
+// 校验 token
 exports.verifyToken = function (req, res) {
   return new Promise((resolve, reject) => {
     // 接收 token

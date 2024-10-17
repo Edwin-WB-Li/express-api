@@ -1,8 +1,7 @@
 // 引入 joi 进行输入验证
 const Joi = require('joi');
-const { verifyToken } = require('../../utils/');
 const dictionariesModel = require('../../models/dictionaries/dictionariesModel.js');
-const { handleError, handleServerError } = require('../../utils/');
+const { verifyToken, handleError, handleServerError } = require('../../utils/');
 class DictionariesController {
   // 根据 type 获取 dropdown list
   static async getDropDownListByType(req, res) {

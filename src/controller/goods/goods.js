@@ -2,8 +2,8 @@
 const Joi = require('joi');
 const moment = require('moment');
 const goodModel = require('../../models/goods/goodsModel.js');
-const { verifyToken } = require('../../utils/');
-const { handleError, handleServerError } = require('../../utils/');
+const { verifyToken, handleError, handleServerError } = require('../../utils/');
+
 class GoodController {
   static async getGoodList(req, res) {
     try {

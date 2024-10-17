@@ -2,8 +2,8 @@
 const Joi = require('joi');
 const moment = require('moment');
 const menusModel = require('../../models/menus/menusModel.js');
-const { verifyToken } = require('../../utils/index.js');
-const { handleError, handleServerError } = require('../../utils/index.js');
+const { verifyToken, handleError, handleServerError } = require('../../utils/');
+
 class MenuController {
   // 根据 role 获取菜单列表 GET
   static async getMenuListByRole(req, res) {

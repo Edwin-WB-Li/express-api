@@ -1,8 +1,6 @@
 const express = require('express');
-
-// 假设有一个usersController来处理业务逻辑
-const UserController = require('../controller/users/users.js');
 const router = express.Router();
+const UserController = require('../controller/users/users.js');
 /**
  * @swagger
  * /api/v1/user/login:

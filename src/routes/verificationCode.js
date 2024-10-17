@@ -2,8 +2,8 @@ const express = require('express');
 const router = express.Router();
 const nodemailer = require('nodemailer');
 const Joi = require('joi'); // 引入 Joi
-const { handleError, handleServerError } = require('../utils/index.js');
-const { verifyToken } = require('../utils/');
+const { handleError, handleServerError } = require('../utils/');
+// const { verifyToken } = require('../utils/');
 // const chalk = require('chalk')
 
 // 配置 SMTP 运输对象

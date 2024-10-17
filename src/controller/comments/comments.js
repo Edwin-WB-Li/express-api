@@ -1,8 +1,8 @@
 // 引入 joi 进行输入验证
 const Joi = require('joi');
-const { verifyToken } = require('../../utils/');
+const { verifyToken, handleError, handleServerError } = require('../../utils/');
 const commentsModel = require('../../models/comments/commentsModel.js');
-const { handleError, handleServerError } = require('../../utils/');
+
 class CommentsController {
   // 根据类型 获取 commentslist
   static async getCommentsList(req, res) {
