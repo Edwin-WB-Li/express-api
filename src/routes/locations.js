@@ -53,10 +53,11 @@ router.get('/locations', async (req, res) => {
       ip: ip,
     });
     const locationsData = locationsResponse?.data?.data;
+    console.log('位置信息--->', locationsData);
     if (!locationsData) {
       return res.status(400).json({
         code: 400,
-        message: `无法获取当前所在位置信息`,
+        message: `无法获取当前所在位置信息: ${locationsResponse?.data?.msg}`,
         data: null,
       });
     }
