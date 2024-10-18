@@ -43,7 +43,7 @@ mongoose
       chalk.green(`MongoDB连接成功: Connected to MongoDB Atlas with Mongoose`)
     )
   )
-  .catch((err) => spinner.fail(chalk.red('MongoDB连接失败:', err)));
+  .catch((err) => spinner.fail(chalk.red('MongoDB连接失败 -----> ', err)));
 
 const app = express();
 
