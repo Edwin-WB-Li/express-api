@@ -25,6 +25,7 @@ const dictionariesRouter = require('./routes/dictionaries');
 const districtsRouter = require('./routes/districts');
 const verificationCodeRouter = require('./routes/verificationCode');
 const commentsRouter = require('./routes/comments');
+const weathersRouter = require('./routes/weathers');
 
 // 端口
 const port = process.env.PORT || 3000;
@@ -53,6 +54,7 @@ app.use(
     origin: [
       'https://next-express-project-lake.vercel.app',
       'https://express-api-livid.vercel.app',
+      'https://restapi.amap.com/v3/weather/weatherInfo',
       'http://localhost:3000',
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // 明确列出允许的方法
@@ -111,6 +113,7 @@ app.use(`${version}/dictionaries`, dictionariesRouter);
 app.use(`${version}/comments`, commentsRouter);
 app.use(`${version}`, districtsRouter);
 app.use(`${version}`, verificationCodeRouter);
+app.use(`${version}`, weathersRouter);
 
 // 注册swagger
 swaggerInstall(app);

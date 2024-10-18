@@ -64,7 +64,7 @@ class UsersController {
 
       console.log('password:---->', password);
       console.log('password:---->', user.password);
-      console.log('密码校验： ', isMatch);
+      console.log('密码校验：', isMatch);
 
       if (!isMatch) {
         return res.status(400).json({
