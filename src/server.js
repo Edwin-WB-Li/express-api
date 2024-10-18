@@ -26,6 +26,7 @@ const districtsRouter = require('./routes/districts');
 const verificationCodeRouter = require('./routes/verificationCode');
 const commentsRouter = require('./routes/comments');
 const weathersRouter = require('./routes/weathers');
+const locationsRouter = require('./routes/locations');
 
 // 端口
 const port = process.env.PORT || 3000;
@@ -114,6 +115,7 @@ app.use(`${version}/comments`, commentsRouter);
 app.use(`${version}`, districtsRouter);
 app.use(`${version}`, verificationCodeRouter);
 app.use(`${version}`, weathersRouter);
+app.use(`${version}`, locationsRouter);
 
 // 注册swagger
 swaggerInstall(app);

@@ -11,6 +11,8 @@ const API_KEY = 'ebb2af0469abefe92ebfdbde548aca07';
 router.get('/weathers', async (req, res) => {
   // 城市编码
   try {
+    // token 校验
+    // await verifyToken(req, res);
     const schema = Joi.object({
       // 城市编码
       city: Joi.string().required(),
