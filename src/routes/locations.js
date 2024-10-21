@@ -1,15 +1,48 @@
 const express = require('express');
-const axios = require('axios');
 const router = express.Router();
 const Joi = require('joi');
-const { verifyToken, handleError, handleServerError } = require('../utils/');
+const {
+  verifyToken,
+  handleError,
+  fetchIp,
+  fetchLocations,
+  fetchLocationsByIp,
+  handleServerError,
+  fetchGeocodedInformation,
+  AMAP_API_KEY,
+} = require('../utils/');
 
-// IP API
-const IP_API_URL = 'https://openapi.lddgo.net/base/gtool/api/v1/GetIp';
-const LOCATIONS_API_URL =
-  'https://openapi.lddgo.net/base/gservice/api/v1/GetIpAddress';
+// 获取 IP地址
+router.get('/getIp', async (req, res) => {
+  try {
+    // 调用 API
+    const ip = await fetchIp();
+    console.log('ip--->', ip);
+    if (!ip) {
+      return res.status(400).json({
+        code: 400,
+        message: `无法获取当前ip信息,请稍后重试`,
+        data: null,
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: 'ip fetched successfully',
+        data: ip,
+      });
+    }
+  } catch (error) {
+    const errorMessage = handleServerError(error);
+    return res.status(500).json({
+      code: 500,
+      message: errorMessage,
+      data: null,
+    });
+  }
+});
 
-router.get('/locations', async (req, res) => {
+// 根据 Openapi 获取城市信息
+router.get('/getLocationsByOpenapi', async (req, res) => {
   // 城市编码
   try {
     // token 校验
@@ -39,9 +72,7 @@ router.get('/locations', async (req, res) => {
     // const ip = '113.105.84.50';
     // https://openapi.lddgo.net/base/gservice/api/v1/GetIpAddress
     // 调用地理位置 API
-    const ipResponse = await axios.get(IP_API_URL);
-    const ip = ipResponse?.data?.data?.ip;
-    console.log('ip--->', ip);
+    const ip = await fetchIp();
     if (!ip) {
       return res.status(400).json({
         code: 400,
@@ -49,10 +80,7 @@ router.get('/locations', async (req, res) => {
         data: null,
       });
     }
-    const locationsResponse = await axios.post(LOCATIONS_API_URL, {
-      ip: ip,
-    });
-    const locationsData = locationsResponse?.data?.data;
+    const locationsData = await fetchLocations(ip);
     console.log('位置信息--->', locationsData);
     if (!locationsData) {
       return res.status(400).json({
@@ -66,6 +94,68 @@ router.get('/locations', async (req, res) => {
       message: 'locationData fetched successfully',
       data: locationsData,
     });
+  } catch (error) {
+    const errorMessage = handleServerError(error);
+    return res.status(500).json({
+      code: 500,
+      message: errorMessage,
+      data: null,
+    });
+  }
+});
+
+router.get('/getLocationsByIp', async (req, res) => {
+  try {
+    const ip = await fetchIp();
+    if (!ip) {
+      return res.status(400).json({
+        code: 400,
+        message: `无法获取当前ip信息`,
+        data: null,
+      });
+    }
+    const locationsData = await fetchLocationsByIp({ key: AMAP_API_KEY, ip });
+    if (!locationsData) {
+      return res.status(400).json({
+        code: 400,
+        message: `无法获取当前所在位置信息: ${locationsResponse?.data?.msg}`,
+        data: null,
+      });
+    }
+    return res.status(200).json({
+      code: 200,
+      message: 'locationData fetched successfully',
+      data: locationsData,
+    });
+  } catch (error) {}
+});
+
+// 根据城市获取城市编码信息
+router.get('/getGeocodedInformationByCity', async (req, res) => {
+  try {
+    const ip = await fetchIp();
+    const locationsData = await fetchLocations(ip);
+    // 调用地理位置 API
+    const { province, city } = locationsData;
+    const address = `${province}${city}`;
+    const data = await fetchGeocodedInformation({
+      address,
+      key: AMAP_API_KEY,
+      city,
+    });
+    if (data.status !== '1') {
+      return res.status(400).json({
+        code: 400,
+        message: `获取数据失败: ${data.info}`,
+        data: null,
+      });
+    } else {
+      return res.status(200).json({
+        code: 200,
+        message: 'data fetched successfully',
+        data: data.geocodes,
+      });
+    }
   } catch (error) {
     const errorMessage = handleServerError(error);
     return res.status(500).json({
