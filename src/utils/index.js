@@ -1,29 +1,86 @@
 const chalk = require('chalk');
 const jwt = require('jsonwebtoken');
-
+const axios = require('axios');
 // const ora = require('ora');
 // const spinner = ora('').start();
 // const logSymbols = require('log-symbols');
+const AMAP_API_KEY = 'ebb2af0469abefe92ebfdbde548aca07';
+const AMAP_GEOCODED_INFORMATION_API_KEY = '26a731b3dde6459027bfc12c56590bb0';
+const IP_API_URL = 'https://openapi.lddgo.net/base/gtool/api/v1/GetIp';
+const AMAP_GEOCODED_INFORMATION_API_URL =
+  'https://restapi.amap.com/v3/geocode/geo';
+const LOCATIONS_API_URL =
+  'https://openapi.lddgo.net/base/gservice/api/v1/GetIpAddress';
+const AMAP_LOCATIONS_API_URL = 'https://restapi.amap.com/v3/ip';
+const AMAP_WEATHER_URL = 'https://restapi.amap.com/v3/weather/weatherInfo';
+// 获取 ip
+async function fetchIp() {
+  try {
+    const response = await axios.get(IP_API_URL);
+    return response?.data?.data?.ip;
+  } catch (error) {
+    throw new Error(`Failed to fetch IP data: ${error.message}`);
+  }
+}
+// 获取 位置信息
+async function fetchLocations(ip) {
+  try {
+    const response = await axios.post(LOCATIONS_API_URL, {
+      ip,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch Locations data: ${error.message}`);
+  }
+}
 
-exports.handleError = function (error = []) {
-  console.error(chalk.red('Check error, Input error ---------> ', error));
-  if (error.details) {
-    const errorDetails = error?.details?.map((detail) => detail.message);
-    return errorDetails.toString();
+// 根据 城市编码获取天气信息
+async function fetchWeathersByCityCode(params) {
+  try {
+    const { key, city } = params;
+    const response = await axios.get(AMAP_WEATHER_URL, {
+      params: {
+        city,
+        key,
+        extensions: 'base',
+      },
+    });
+    return response?.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch Weathers data: ${error.message}`);
   }
-  return error.message;
-};
-exports.handleServerError = function (error) {
-  console.error(chalk.red('server error ---------> ', error));
-  let errorMessage = '服务器错误';
-  if (error?.message) {
-    errorMessage = error?.message;
+}
+// 根据 ip 获取 城市信息
+async function fetchLocationsByIp(params) {
+  try {
+    const { key, ip } = params;
+    const response = await axios.get(AMAP_LOCATIONS_API_URL, {
+      params: {
+        key,
+        ip,
+      },
+    });
+    return response?.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch Locations data: ${error.message}`);
   }
-  return errorMessage;
-};
+}
+
+// 获取 城市编码信息
+async function fetchGeocodedInformation(params) {
+  try {
+    const { key, address, city } = params;
+    const response = await axios.get(
+      `${AMAP_GEOCODED_INFORMATION_API_URL}?key=${key}&address=${address}&city=${city}`
+    );
+    return response?.data;
+  } catch (error) {
+    throw new Error(`Failed to fetch Locations data: ${error.message}`);
+  }
+}
 
 // 生成 token
-exports.createToken = function (data, expiresInHours = 24) {
+function createToken(data, expiresInHours = 24) {
   const nowInSeconds = Math.floor(Date.now() / 1000);
   return jwt.sign(
     {
@@ -36,9 +93,10 @@ exports.createToken = function (data, expiresInHours = 24) {
     },
     'token'
   );
-};
+}
+
 // 校验 token
-exports.verifyToken = function (req, res) {
+function verifyToken(req, res) {
   return new Promise((resolve, reject) => {
     // 接收 token
     const token = req.headers.authorization;
@@ -73,4 +131,40 @@ exports.verifyToken = function (req, res) {
       });
     }
   });
+}
+
+function handleError(error = []) {
+  console.error(chalk.red('Check error, Input error ---------> ', error));
+  if (error.details) {
+    const errorDetails = error?.details?.map((detail) => detail.message);
+    return errorDetails.toString();
+  }
+  return error.message;
+}
+
+function handleServerError(error) {
+  console.error(chalk.red('server error ---------> ', error));
+  let errorMessage = '服务器错误';
+  if (error?.message) {
+    errorMessage = error?.message;
+  }
+  return errorMessage;
+}
+
+module.exports = {
+  createToken,
+  verifyToken,
+  handleServerError,
+  handleError,
+  fetchIp,
+  fetchLocations,
+  fetchGeocodedInformation,
+  fetchWeathersByCityCode,
+  fetchLocationsByIp,
+  AMAP_API_KEY,
+  AMAP_GEOCODED_INFORMATION_API_KEY,
+  LOCATIONS_API_URL,
+  IP_API_URL,
+  AMAP_GEOCODED_INFORMATION_API_URL,
+  AMAP_WEATHER_URL,
 };
