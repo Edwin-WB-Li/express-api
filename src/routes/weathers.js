@@ -15,7 +15,7 @@ router.get('/getWeathersByIp', async (req, res) => {
   // 城市编码
   try {
     // token 校验
-    // await verifyToken(req, res);
+    await verifyToken(req, res);
     // const schema = Joi.object({
     //   // 城市编码
     //   city: Joi.string().required(),
