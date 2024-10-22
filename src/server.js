@@ -1,12 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
-// const next = require('next')
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const ora = require('ora');
 const chalk = require('chalk');
-// const open = require('open');
 const fs = require('fs');
 const spinner = ora({
   text: 'Service running...',
@@ -22,11 +20,11 @@ const usersRouter = require('./routes/users');
 const filesdRouter = require('./routes/files');
 const menusRouter = require('./routes/menus');
 const dictionariesRouter = require('./routes/dictionaries');
-const districtsRouter = require('./routes/districts');
 const verificationCodeRouter = require('./routes/verificationCode');
 const commentsRouter = require('./routes/comments');
 const weathersRouter = require('./routes/weathers');
 const locationsRouter = require('./routes/locations');
+const devicesRouter = require('./routes/devices');
 
 // 端口
 const port = process.env.PORT || 3000;
@@ -67,7 +65,7 @@ app.use(
 app.use('/static', express.static(path.resolve(__dirname, '../static')));
 
 // 处理根路径请求，发送 index.html 文件
-app.get('/', (_req, res) => {
+app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
@@ -112,10 +110,10 @@ app.use(`${version}/file`, filesdRouter);
 app.use(`${version}/sysPermission`, menusRouter);
 app.use(`${version}/dictionaries`, dictionariesRouter);
 app.use(`${version}/comments`, commentsRouter);
-app.use(`${version}`, districtsRouter);
+app.use(`${version}/devices`, devicesRouter);
+app.use(`${version}/locations`, locationsRouter);
+app.use(`${version}/weathers`, weathersRouter);
 app.use(`${version}`, verificationCodeRouter);
-app.use(`${version}`, weathersRouter);
-app.use(`${version}`, locationsRouter);
 
 // 注册swagger
 swaggerInstall(app);

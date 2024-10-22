@@ -269,7 +269,6 @@ router.post('/upload', cpUpload, (req, res) => {
  *                   example: null
  */
 router.post('/download', (req, res) => {
-  console.log(req.body);
   const { fileName } = req.body;
   const filePath = path.resolve(__dirname, `../../static/${fileName}`);
   // const filePath = `/static/${fileName}`

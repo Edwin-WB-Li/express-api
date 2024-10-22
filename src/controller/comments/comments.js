@@ -57,7 +57,7 @@ class CommentsController {
       const commentSchema = Joi.object({
         id: Joi.string().max(255).required(),
         author: Joi.string().max(255).required(),
-        avatar: Joi.string().max(255).required(),
+        avatar: Joi.string().max(400).required(),
         content: Joi.string().max(255).required(),
         likes: Joi.number().integer().min(0),
         isLikes: Joi.boolean(),

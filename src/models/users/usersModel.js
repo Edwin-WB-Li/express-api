@@ -26,7 +26,7 @@ const UsersSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default:
-      'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
+      'https://upload-bbs.miyoushe.com/upload/2021/03/11/73281682/f810fbc2e4806aab8176e96feee0078e_5530265271028193466.jpg',
   },
   nick_name: {
     type: String,

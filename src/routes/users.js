@@ -235,7 +235,7 @@ router.post('/register', UserController.register);
 // 忘记密码
 /**
  * @swagger
- * /api/v1/user/forgot-password:
+ * /api/v1/user/forgotPassword:
  *   post:
  *     summary: 用户修改密码接口
  *     description: 用户修改密码
@@ -320,7 +320,7 @@ router.post('/register', UserController.register);
  *                   type: null
  *                   example: null
  */
-router.post('/forgot-password', UserController.forgotPassword);
+router.post('/forgotPassword', UserController.forgotPassword);
 // 获取用户列表
 /**
  * @swagger

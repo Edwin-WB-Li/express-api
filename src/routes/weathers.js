@@ -38,8 +38,7 @@ router.get('/getWeathersByIp', async (req, res) => {
       key: AMAP_API_KEY,
       city: locationsData.adcode,
     });
-    console.log('locationsData--->', locationsData);
-    console.log('weathersData--->', weathersData);
+
     if (weathersData.status !== '1') {
       return res.status(400).json({
         code: 400,

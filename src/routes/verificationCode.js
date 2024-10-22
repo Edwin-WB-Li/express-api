@@ -158,8 +158,7 @@ router.post('/send-verification-code', async (req, res) => {
           data: null,
         });
       }
-      console.log(`Verification code sent: ${info.messageId}`);
-      res.json({
+      return res.json({
         code: 200,
         message: 'Verification code sent successfully',
         data: `验证码已发送至：${email},请注意查收，切勿随意泄露`,
@@ -167,7 +166,7 @@ router.post('/send-verification-code', async (req, res) => {
     });
   } catch (error) {
     const errorMessage = handleServerError(error);
-    res.status(500).json({
+    return res.status(500).json({
       code: 500,
       message: errorMessage || 'Internal Server Error',
       data: null,

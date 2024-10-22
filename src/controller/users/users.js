@@ -74,7 +74,6 @@ class UsersController {
           status: false,
         });
       }
-      // console.log(user)
       const userInfo = {
         ...user,
       };
@@ -599,8 +598,6 @@ class UsersController {
           $in: _ids,
         },
       });
-
-      console.log('result', result);
 
       if (result.deletedCount === 0) {
         return res.status(404).json({

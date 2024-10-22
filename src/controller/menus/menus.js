@@ -180,8 +180,6 @@ class MenuController {
         },
       });
 
-      console.log('result', result);
-
       if (result.deletedCount === 0) {
         return res.status(404).json({
           code: 404,

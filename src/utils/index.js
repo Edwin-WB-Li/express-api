@@ -1,6 +1,7 @@
 const chalk = require('chalk');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
+const Joi = require('joi');
 // const ora = require('ora');
 // const spinner = ora('').start();
 // const logSymbols = require('log-symbols');
@@ -13,6 +14,7 @@ const LOCATIONS_API_URL =
   'https://openapi.lddgo.net/base/gservice/api/v1/GetIpAddress';
 const AMAP_LOCATIONS_API_URL = 'https://restapi.amap.com/v3/ip';
 const AMAP_WEATHER_URL = 'https://restapi.amap.com/v3/weather/weatherInfo';
+
 // 获取 ip
 async function fetchIp() {
   try {
@@ -25,18 +27,34 @@ async function fetchIp() {
 // 获取 位置信息
 async function fetchLocations(ip) {
   try {
+    const schema = Joi.string().ip().required();
+    const { error } = schema.validate(ip);
+    if (error) {
+      const errorMessage = handleError(error);
+      throw new Error(errorMessage);
+    }
     const response = await axios.post(LOCATIONS_API_URL, {
       ip,
     });
     return response?.data?.data;
   } catch (error) {
-    throw new Error(`Failed to fetch Locations data: ${error.message}`);
+    const errorMessage = handleServerError(error);
+    throw new Error(`Failed to fetch Locations data: ${errorMessage}`);
   }
 }
 
 // 根据 城市编码获取天气信息
 async function fetchWeathersByCityCode(params) {
   try {
+    const schema = Joi.object({
+      key: Joi.string().required(),
+      city: Joi.string().required(),
+    });
+    const { error } = schema.validate(params);
+    if (error) {
+      const errorMessage = handleError(error);
+      throw new Error(errorMessage);
+    }
     const { key, city } = params;
     const response = await axios.get(AMAP_WEATHER_URL, {
       params: {
@@ -53,6 +71,15 @@ async function fetchWeathersByCityCode(params) {
 // 根据 ip 获取 城市信息
 async function fetchLocationsByIp(params) {
   try {
+    const schema = Joi.object({
+      key: Joi.string().required(),
+      ip: Joi.string().ip().required(),
+    });
+    const { error } = schema.validate(params);
+    if (error) {
+      const errorMessage = handleError(error);
+      throw new Error(errorMessage);
+    }
     const { key, ip } = params;
     const response = await axios.get(AMAP_LOCATIONS_API_URL, {
       params: {
@@ -62,13 +89,24 @@ async function fetchLocationsByIp(params) {
     });
     return response?.data;
   } catch (error) {
-    throw new Error(`Failed to fetch Locations data: ${error.message}`);
+    const errorMessage = handleServerError(error);
+    throw new Error(`Failed to fetch Locations data: ${errorMessage}`);
   }
 }
 
 // 获取 城市编码信息
 async function fetchGeocodedInformation(params) {
   try {
+    const schema = Joi.object({
+      key: Joi.string().required(),
+      address: Joi.string().required(),
+      city: Joi.string().required(),
+    });
+    const { error } = schema.validate(params);
+    if (error) {
+      const errorMessage = handleError(error);
+      throw new Error(errorMessage);
+    }
     const { key, address, city } = params;
     const response = await axios.get(
       `${AMAP_GEOCODED_INFORMATION_API_URL}?key=${key}&address=${address}&city=${city}`
@@ -151,6 +189,23 @@ function handleServerError(error) {
   return errorMessage;
 }
 
+// 提取设备类型判断逻辑
+function getDeviceType(userAgent) {
+  if (/mobile/i.test(userAgent)) return 'Mobile';
+  if (/tablet/i.test(userAgent)) return 'Tablet';
+  return 'PC';
+}
+
+// 提取操作系统判断逻辑
+function getOS(userAgent) {
+  if (/windows/i.test(userAgent)) return 'Windows';
+  if (/macintosh|mac os x/i.test(userAgent)) return 'Mac OS';
+  if (/linux/i.test(userAgent)) return 'Linux';
+  if (/android/i.test(userAgent)) return 'Android';
+  if (/iphone|ipad|ipod/i.test(userAgent)) return 'iOS';
+  return 'Unknown OS';
+}
+
 module.exports = {
   createToken,
   verifyToken,
@@ -161,6 +216,8 @@ module.exports = {
   fetchGeocodedInformation,
   fetchWeathersByCityCode,
   fetchLocationsByIp,
+  getDeviceType,
+  getOS,
   AMAP_API_KEY,
   AMAP_GEOCODED_INFORMATION_API_KEY,
   LOCATIONS_API_URL,
