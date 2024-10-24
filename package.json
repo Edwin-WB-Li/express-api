@@ -35,7 +35,8 @@
     "swagger-ui-express": "^5.0.1",
     "typescript": "^5.5.3",
     "ua-parser-js": "^1.0.39",
-    "uuid": "^10.0.0"
+    "uuid": "^10.0.0",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",

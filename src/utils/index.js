@@ -199,7 +199,7 @@ function getDeviceType(userAgent) {
 // 提取操作系统判断逻辑
 function getOS(userAgent) {
   if (/windows/i.test(userAgent)) return 'Windows';
-  if (/macintosh|mac os x/i.test(userAgent)) return 'Mac OS';
+  if (/macintosh|mac os x/i.test(userAgent)) return 'Mac';
   if (/linux/i.test(userAgent)) return 'Linux';
   if (/android/i.test(userAgent)) return 'Android';
   if (/iphone|ipad|ipod/i.test(userAgent)) return 'iOS';

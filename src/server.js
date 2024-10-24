@@ -3,6 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+// WebSocket
+const WebSocket = require('ws');
 const ora = require('ora');
 const chalk = require('chalk');
 const fs = require('fs');
@@ -179,6 +181,27 @@ process.on('unhandledRejection', (reason, promise) => {
   gracefulShutdown(httpServer);
 });
 
+// 创建 WebSocket 服务器
+const wss = new WebSocket.Server({ noServer: true });
+
+wss.on('connection', (ws) => {
+  console.log('Client connected');
+  ws.on('error', console.error);
+  ws.on('message', (message) => {
+    console.log(`Received: ${message}`);
+    // 广播消息给所有连接的客户端
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  });
+
+  ws.on('close', () => {
+    console.log('Client disconnected');
+  });
+});
+
 // 监听端口
 const httpServer = app.listen(port, async (err) => {
   if (err) {
@@ -201,4 +224,11 @@ const httpServer = app.listen(port, async (err) => {
   spinner.succeed(
     chalk.green(`Swagger Document: http://localhost:${port}/api/v1/swagger-doc`)
   );
+});
+
+// 将 WebSocket 服务器与 HTTP 服务器结合
+httpServer.on('upgrade', (request, socket, head) => {
+  wss.handleUpgrade(request, socket, head, (ws) => {
+    wss.emit('connection', ws, request);
+  });
 });
