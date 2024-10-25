@@ -34,7 +34,7 @@ const port = process.env.PORT || 3000;
 // MongoDB 连接
 // 连接 MongoDB Atlas 集群
 const url =
-  'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node';
+  'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node?retryWrites=true&w=majority';
 
 const MONGODB_URI =
   process.env.MONGODB_URL || url || 'mongodb://127.0.0.1:27017/node';
