@@ -5,6 +5,7 @@ const path = require('path');
 const cors = require('cors');
 // WebSocket
 const WebSocket = require('ws');
+const recordsModel = require('./models/records/records');
 const ora = require('ora');
 const chalk = require('chalk');
 const fs = require('fs');
@@ -183,22 +184,44 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // 创建 WebSocket 服务器
 const wss = new WebSocket.Server({ noServer: true });
+const clients = new Map();
+wss.on('connection', (ws, req) => {
+  const user = req.url.slice(1);
+  clients.set(user, ws);
+  spinner.succeed(chalk.green('Client connected (客户端连接成功)'));
 
-wss.on('connection', (ws) => {
-  console.log('Client connected');
-  ws.on('error', console.error);
-  ws.on('message', (message) => {
+  ws.on('error', (err) => {
+    spinner.fail(chalk.red('WebSocket error:', err));
+  });
+
+  ws.on('message', async (message) => {
     console.log(`Received: ${message}`);
+    // const parsedMessage = JSON.parse(message);
+    // const { sender, recipient, text } = parsedMessage;
+
+    // 保存聊天记录到数据库
+    // const chatMessage = new recordsModel({ sender, recipient, message: text });
+    // await chatMessage.save();
+
     // 广播消息给所有连接的客户端
+    // const toWs = clients.get(recipient);
+    // if (toWs && toWs.readyState === WebSocket.OPEN) {
+    //   toWs.send(JSON.stringify({ sender, recipient, text }));
+    // } else {
+    //   console.log(`User ${recipient} is not online`);
+    // }
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         client.send(message);
+        // client.send(JSON.stringify({ sender, text }));
       }
     });
   });
 
   ws.on('close', () => {
-    console.log('Client disconnected');
+    spinner.succeed(
+      chalk.green(`Client ${user} disconnected (客户端断开连接)`)
+    );
   });
 });
 

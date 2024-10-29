@@ -27,6 +27,8 @@ const transporter = nodemailer.createTransport({
 // 存储验证码的 Map
 const verificationCodes = new Map();
 
+// 记录请求次数的 Map
+const requestCounts = new Map();
 // 生成随机验证码
 function generateVerificationCode() {
   // 生成一个 6 位的随机数
@@ -127,11 +129,41 @@ router.post('/send-verification-code', async (req, res) => {
 
     const { email } = value;
 
+    // 获取当前时间
+    const now = Date.now();
+
+    // 获取用户请求记录
+    let requestRecord = requestCounts.get(email);
+
+    if (!requestRecord) {
+      requestRecord = { count: 0, lastRequestTime: now };
+    }
+
+    // 检查请求次数和时间
+    if (
+      requestRecord.count >= 3 &&
+      now - requestRecord.lastRequestTime < 5 * 60 * 1000
+    ) {
+      return res.status(429).json({
+        code: 429,
+        message: 'Too many requests. Please try again in five minutes',
+        data: null,
+      });
+    }
+
+    // 更新请求记录
+    requestRecord.count += 1;
+    requestRecord.lastRequestTime = now;
+    requestCounts.set(email, requestRecord);
+
+    // 设置验证码有效期（例如：5分钟）
+    const expirationTime = now + 5 * 60 * 1000;
+
     // 生成验证码
     const verificationCode = generateVerificationCode();
 
     // 存储验证码
-    verificationCodes.set(email, verificationCode);
+    verificationCodes.set(email, { verificationCode, expirationTime });
 
     // 邮件详情
     const mailOptions = {
@@ -142,9 +174,9 @@ router.post('/send-verification-code', async (req, res) => {
       // 主题
       subject: '验证码',
       // 文本内容
-      text: `您的验证码是：${verificationCode}`,
+      text: `您的验证码是：${verificationCode},有效期为5分钟`,
       // HTML 内容
-      html: `<p>您的验证码是：<b>${verificationCode}</b></p>`,
+      html: `<p>您的验证码是：<b>${verificationCode}</b></p><p>有效期为5分钟,切勿随意泄露</p>`,
     };
 
     // 发送验证码邮件
@@ -161,7 +193,7 @@ router.post('/send-verification-code', async (req, res) => {
       return res.json({
         code: 200,
         message: 'Verification code sent successfully',
-        data: `验证码已发送至：${email},请注意查收，切勿随意泄露`,
+        data: `验证码已发送至：${email},有效期为5分钟,请注意查收,切勿随意泄露`,
       });
     });
   } catch (error) {
@@ -273,9 +305,9 @@ router.post('/verify-verification-code', async (req, res) => {
 
     const { email, code } = value;
 
-    const storedCode = verificationCodes.get(email);
+    const storedData = verificationCodes.get(email);
 
-    if (!storedCode) {
+    if (!storedData) {
       return res.status(400).json({
         code: 400,
         message: 'Verification code not found',
@@ -283,21 +315,32 @@ router.post('/verify-verification-code', async (req, res) => {
       });
     }
 
-    if (storedCode === code) {
-      // 清除已验证的验证码
-      verificationCodes.delete(email);
-      res.json({
-        code: 200,
-        message: 'Verification code verified successfully',
-        data: storedCode,
-      });
-    } else {
-      res.status(400).json({
+    const { verificationCode, expirationTime } = storedData;
+
+    if (code !== verificationCode) {
+      return res.status(400).json({
         code: 400,
         message: 'Invalid verification code',
         data: null,
       });
     }
+
+    if (Date.now() > expirationTime) {
+      return res.status(400).json({
+        code: 400,
+        message: 'Verification code has expired',
+        data: null,
+      });
+    }
+
+    // 清除已验证的验证码;
+    verificationCodes.delete(email);
+
+    return res.json({
+      code: 200,
+      message: 'Verification code verified successfully',
+      data: verificationCode,
+    });
   } catch (error) {
     const errorMessage = handleServerError(error);
     res.status(500).json({

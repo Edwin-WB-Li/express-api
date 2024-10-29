@@ -2,19 +2,10 @@ const mongoose = require('mongoose');
 const moment = require('moment');
 
 module.exports = mongoose.model(
-  'dictionaries',
+  'records',
   new mongoose.Schema({
-    type: {
-      type: String,
-      require: true,
-    },
-    label: {
-      type: String,
-      require: true,
-    },
-    value: {
-      type: String,
-      require: true,
-    },
+    sender: { type: String, required: true },
+    message: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
   })
 );
