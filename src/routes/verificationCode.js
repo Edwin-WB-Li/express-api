@@ -305,6 +305,31 @@ router.post('/verify-verification-code', async (req, res) => {
 
     const { email, code } = value;
 
+    const now = Date.now();
+
+    // 获取用户请求记录
+    let requestRecord = requestCounts.get(email);
+
+    if (!requestRecord) {
+      requestRecord = { count: 0, lastRequestTime: now };
+    }
+    // 检查请求次数和时间
+    if (
+      requestRecord.count >= 10 &&
+      now - requestRecord.lastRequestTime < 5 * 60 * 1000
+    ) {
+      return res.status(429).json({
+        code: 429,
+        message: 'Too many requests. Please try again in five minutes',
+        data: null,
+      });
+    }
+
+    // 更新请求记录
+    requestRecord.count += 1;
+    requestRecord.lastRequestTime = now;
+    requestCounts.set(email, requestRecord);
+
     const storedData = verificationCodes.get(email);
 
     if (!storedData) {
