@@ -120,7 +120,7 @@ class UsersController {
           .required(),
         role: Joi.string().required(),
         role_name: Joi.string().required(),
-        nick_name: Joi.string(),
+        nick_name: Joi.string().required(),
         captcha: Joi.string(),
         agreement: Joi.boolean(),
       });
@@ -142,57 +142,62 @@ class UsersController {
       const currentTime = moment.utc(Date.now()).format('YYYY-MM-DD');
 
       // 查找用户名是否重复
-      const user = await usersModel.findOne({
+      const existingUserByUsername = await usersModel.findOne({
         username,
       });
-      if (user) {
+
+      if (existingUserByUsername) {
         return res.status(400).json({
           code: 400,
           message: '账号已存在',
           data: null,
           status: false,
         });
-      } else {
-        // 加密密码
-        const hashedPassword = bcrypt.hashSync(password, 10);
+      }
 
-        // const data = {
-        //   username,
-        //   password: hashedPassword,
-        //   create_time: moment.utc(Date.now()).format('YYYY-MM-DD'),
-        //   email,
-        //   mobile,
-        //   role,
-        //   role_name,
-        //   nick_name
-        // }
-        // 创建新用户
-        const newUser = new usersModel({
-          username,
-          password: hashedPassword,
-          create_time: currentTime, // 使用预先计算的时间
-          email,
-          mobile,
-          role,
-          role_name,
-          nick_name,
-        });
-        const savedUser = await newUser.save();
-        // 将 _id 保存到 id 字段
-        savedUser.id = savedUser._id.toString();
-        // 存入数据库
-        await savedUser.save();
-        // await usersModel.insertMany([data])
-        res.status(200).json({
-          code: 200,
-          message: '注册成功',
-          data: {
-            id: savedUser.id,
-            username: savedUser.username,
-          },
-          status: true,
+      // 查找昵称是否重复
+      const existingUserByNickName = await usersModel.findOne({
+        nick_name,
+      });
+      if (existingUserByNickName) {
+        return res.status(400).json({
+          code: 400,
+          message: '昵称已存在',
+          data: null,
+          status: false,
         });
       }
+
+      // 加密密码
+      const hashedPassword = bcrypt.hashSync(password, 10);
+
+      // 创建新用户
+      const newUser = new usersModel({
+        username,
+        password: hashedPassword,
+        create_time: currentTime, // 使用预先计算的时间
+        email,
+        mobile,
+        role,
+        role_name,
+        nick_name,
+      });
+      const savedUser = await newUser.save();
+      // 将 _id 保存到 id 字段
+      savedUser.id = savedUser._id.toString();
+      // 存入数据库
+      await savedUser.save();
+      // await usersModel.insertMany([data])
+      res.status(200).json({
+        code: 200,
+        message: '注册成功',
+        data: {
+          id: savedUser.id,
+          username: savedUser.username,
+        },
+        status: true,
+      });
+      // }
     } catch (error) {
       const errorMessage = handleServerError(error);
       return res.status(500).json({

@@ -9,7 +9,6 @@
     "format": "prettier --write ."
   },
   "dependencies": {
-    "address": "^2.0.3",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.0.0",
@@ -18,7 +17,6 @@
     "device": "^0.3.12",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "express-ip": "^1.0.4",
     "geolib": "^3.3.4",
     "http-proxy-middleware": "^3.0.0",
     "joi": "^17.13.1",
@@ -28,13 +26,13 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
     "nodemon": "^3.1.2",
+    "on-finished": "^2.4.1",
     "open": "^10.1.0",
     "ora": "^5.0.0",
     "sharp": "^0.33.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
     "typescript": "^5.5.3",
-    "ua-parser-js": "^1.0.39",
     "uuid": "^10.0.0",
     "ws": "^8.18.0"
   },

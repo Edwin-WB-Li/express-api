@@ -1,3 +1,4 @@
+const { required } = require('joi');
 const mongoose = require('mongoose');
 
 module.exports = mongoose.model(
@@ -6,6 +7,6 @@ module.exports = mongoose.model(
     sender: { type: String, required: true },
     recipient: { type: String, required: true },
     message: { type: String, required: true },
-    timestamp: { type: Date, default: Date.now },
+    timestamp: { type: Date, required: true },
   })
 );

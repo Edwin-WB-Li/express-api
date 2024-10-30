@@ -5,7 +5,7 @@ const path = require('path');
 const cors = require('cors');
 // WebSocket
 const WebSocket = require('ws');
-const recordsModel = require('./models/records/records');
+const recordsModel = require('./models/records/recordsModel');
 const ora = require('ora');
 const chalk = require('chalk');
 const fs = require('fs');
@@ -28,6 +28,7 @@ const commentsRouter = require('./routes/comments');
 const weathersRouter = require('./routes/weathers');
 const locationsRouter = require('./routes/locations');
 const devicesRouter = require('./routes/devices');
+const recordsRouter = require('./routes/records');
 
 // 端口
 const port = process.env.PORT || 3000;
@@ -116,6 +117,7 @@ app.use(`${version}/comments`, commentsRouter);
 app.use(`${version}/devices`, devicesRouter);
 app.use(`${version}/locations`, locationsRouter);
 app.use(`${version}/weathers`, weathersRouter);
+app.use(`${version}/records`, recordsRouter);
 app.use(`${version}`, verificationCodeRouter);
 
 // 注册swagger
@@ -193,30 +195,35 @@ wss.on('connection', (ws, req) => {
   const user = req.url.slice(1);
   // 将用户标识和 WebSocket 连接关联起来
   clients.set(user, ws);
-  spinner.succeed(chalk.green('Client connected (客户端连接成功)'));
+  spinner.succeed(chalk.green(`Client connected (客户端 ${user} 连接成功)`));
 
   // 处理消息
   ws.on('message', async (information) => {
     console.log(`Received: ${information}`);
     const parsedMessage = JSON.parse(information);
-    const { sender, recipient, message } = parsedMessage;
+    const { sender, recipient, message, timestamp } = parsedMessage;
 
     // 保存聊天记录到数据库
-    const chatMessage = new recordsModel({ sender, recipient, message });
+    const chatMessage = new recordsModel({
+      sender,
+      recipient,
+      message,
+      timestamp,
+    });
     await chatMessage.save();
 
     // 广播消息给所有连接的客户端
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
         // client.send(message);
-        client.send(JSON.stringify({ sender, recipient, message }));
+        client.send(JSON.stringify({ sender, recipient, message, timestamp }));
       }
     });
   });
   // 客户端断开处理
   ws.on('close', () => {
     spinner.succeed(
-      chalk.green(`Client ${user} disconnected (客户端断开连接)`),
+      chalk.green(`Client ${user} disconnected (客户端 ${user} 断开连接)`),
       // 从 Map 中移除断开连接的客户端
       clients.delete(user)
     );
@@ -233,6 +240,7 @@ const httpServer = app.listen(port, async (err) => {
     spinner.fail(chalk.red('Error starting server:', err));
     return;
   }
+
   // 如果 Swagger 尚未打开过，则打开一次
   if (!hasOpenedSwagger()) {
     try {
