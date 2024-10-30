@@ -182,46 +182,48 @@ process.on('unhandledRejection', (reason, promise) => {
   gracefulShutdown(httpServer);
 });
 
-// 创建 WebSocket 服务器
+// 创建 WebSocket 服务器 ，手动处理 HTTP 升级请求
 const wss = new WebSocket.Server({ noServer: true });
+// 使用了一个 Map 来存储连接的客户端
 const clients = new Map();
+
+// 客户端连接处理
 wss.on('connection', (ws, req) => {
+  // 从请求 URL 中提取用户标识
   const user = req.url.slice(1);
+  // 将用户标识和 WebSocket 连接关联起来
   clients.set(user, ws);
   spinner.succeed(chalk.green('Client connected (客户端连接成功)'));
 
-  ws.on('error', (err) => {
-    spinner.fail(chalk.red('WebSocket error:', err));
-  });
-
-  ws.on('message', async (message) => {
-    console.log(`Received: ${message}`);
-    // const parsedMessage = JSON.parse(message);
-    // const { sender, recipient, text } = parsedMessage;
+  // 处理消息
+  ws.on('message', async (information) => {
+    console.log(`Received: ${information}`);
+    const parsedMessage = JSON.parse(information);
+    const { sender, recipient, message } = parsedMessage;
 
     // 保存聊天记录到数据库
-    // const chatMessage = new recordsModel({ sender, recipient, message: text });
-    // await chatMessage.save();
+    const chatMessage = new recordsModel({ sender, recipient, message });
+    await chatMessage.save();
 
     // 广播消息给所有连接的客户端
-    // const toWs = clients.get(recipient);
-    // if (toWs && toWs.readyState === WebSocket.OPEN) {
-    //   toWs.send(JSON.stringify({ sender, recipient, text }));
-    // } else {
-    //   console.log(`User ${recipient} is not online`);
-    // }
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(message);
-        // client.send(JSON.stringify({ sender, text }));
+        // client.send(message);
+        client.send(JSON.stringify({ sender, recipient, message }));
       }
     });
   });
-
+  // 客户端断开处理
   ws.on('close', () => {
     spinner.succeed(
-      chalk.green(`Client ${user} disconnected (客户端断开连接)`)
+      chalk.green(`Client ${user} disconnected (客户端断开连接)`),
+      // 从 Map 中移除断开连接的客户端
+      clients.delete(user)
     );
+  });
+  // 处理错误
+  ws.on('error', (err) => {
+    spinner.fail(chalk.red('WebSocket error:', err));
   });
 });
 
@@ -231,7 +233,6 @@ const httpServer = app.listen(port, async (err) => {
     spinner.fail(chalk.red('Error starting server:', err));
     return;
   }
-
   // 如果 Swagger 尚未打开过，则打开一次
   if (!hasOpenedSwagger()) {
     try {
@@ -251,6 +252,7 @@ const httpServer = app.listen(port, async (err) => {
 
 // 将 WebSocket 服务器与 HTTP 服务器结合
 httpServer.on('upgrade', (request, socket, head) => {
+  // 处理 WebSocket 升级请求，方法会解析 HTTP 升级请求，并在成功升级后触发 connection 事件
   wss.handleUpgrade(request, socket, head, (ws) => {
     wss.emit('connection', ws, request);
   });
