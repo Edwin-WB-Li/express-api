@@ -195,7 +195,11 @@ wss.on('connection', (ws, req) => {
   const user = req.url.slice(1);
   // 将用户标识和 WebSocket 连接关联起来
   clients.set(user, ws);
-  spinner.succeed(chalk.green(`Client connected (客户端 ${user} 连接成功)`));
+  spinner.succeed(
+    chalk.green(
+      decodeURIComponent(` ${user} client connected ( ${user} 客户端连接成功)`)
+    )
+  );
 
   // 处理消息
   ws.on('message', async (information) => {
@@ -223,7 +227,11 @@ wss.on('connection', (ws, req) => {
   // 客户端断开处理
   ws.on('close', () => {
     spinner.succeed(
-      chalk.green(`Client ${user} disconnected (客户端 ${user} 断开连接)`),
+      chalk.green(
+        decodeURIComponent(
+          `${user} client disconnected (${user} 客户端断开连接)`
+        )
+      ),
       // 从 Map 中移除断开连接的客户端
       clients.delete(user)
     );
