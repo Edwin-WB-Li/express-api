@@ -1,3 +1,17 @@
+```bash
+启动：
+	pm2 start ecosystem.config.js
+
+停止所有：
+	pm2 delete all
+
+查看当前运行实例：
+	pm2 list
+
+停止应用程序：
+	pm2 stop app.js
+```
+
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
