@@ -54,12 +54,14 @@ const app = express();
 // 在其他中间件之前启用CORS
 app.use(
   cors({
-    origin: [
-      'https://next-express-project-lake.vercel.app',
-      'https://express-api-livid.vercel.app',
-      'https://restapi.amap.com/v3/weather/weatherInfo',
-      'http://localhost:3000',
-    ],
+    // 允许所有跨域
+    origin: true,
+    // [
+    //   'https://next-express-project-lake.vercel.app',
+    //   'https://express-api-livid.vercel.app',
+    //   'https://restapi.amap.com/v3/weather/weatherInfo',
+    //   'http://localhost:3000',
+    // ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // 明确列出允许的方法
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
