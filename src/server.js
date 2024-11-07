@@ -63,7 +63,7 @@ app.use(
     //   'http://localhost:3000',
     // ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // 明确列出允许的方法
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'],
   })
 );
 
