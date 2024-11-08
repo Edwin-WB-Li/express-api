@@ -102,6 +102,7 @@ router.get('/getIp', async (req, res) => {
     });
   }
 });
+
 // 根据 Openapi 获取城市信息
 /**
  * @swagger
@@ -204,6 +205,7 @@ router.get('/getLocationsByOpenapi', async (req, res) => {
     });
   }
 });
+
 // 根据 Amap Api 获取城市信息
 /**
  * @swagger
@@ -302,6 +304,7 @@ router.get('/getLocationsByIp', async (req, res) => {
     });
   }
 });
+
 // 根据城市获取城市编码信息
 /**
  * @swagger

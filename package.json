@@ -6,6 +6,8 @@
     "dev": "nodemon ./src/index.js",
     "lint": "eslint . --fix",
     "start": "npm run dev",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
+    "start:prod": "cross-env NODE_ENV=production nodemon ./src/index.js",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -46,6 +48,7 @@
     "@types/react": "^18.3.3",
     "babel-eslint": "^10.1.0",
     "babel-loader": "^9.2.1",
+    "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",

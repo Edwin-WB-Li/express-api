@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -29,17 +31,18 @@ const weathersRouter = require('./routes/weathers');
 const locationsRouter = require('./routes/locations');
 const devicesRouter = require('./routes/devices');
 const recordsRouter = require('./routes/records');
+const dependenciesRouter = require('./routes/dependencies');
 
 // 端口
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3001;
 
 // MongoDB 连接
 // 连接 MongoDB Atlas 集群
-const url =
-  'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node?retryWrites=true&w=majority';
+// const url =
+//   'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node?retryWrites=true&w=majority';
 
 const MONGODB_URI =
-  process.env.MONGODB_URL || url || 'mongodb://127.0.0.1:27017/node';
+  process.env.MONGODB_ATLAS_URL || process.env.MONGODB_LOCAL_URL;
 mongoose
   .connect(MONGODB_URI)
   .then(() =>
@@ -71,7 +74,7 @@ app.use(
 app.use('/static', express.static(path.resolve(__dirname, '../static')));
 
 // 处理根路径请求，发送 index.html 文件
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
@@ -120,6 +123,7 @@ app.use(`${version}/devices`, devicesRouter);
 app.use(`${version}/locations`, locationsRouter);
 app.use(`${version}/weathers`, weathersRouter);
 app.use(`${version}/records`, recordsRouter);
+app.use(`${version}/dependencies`, dependenciesRouter);
 app.use(`${version}`, verificationCodeRouter);
 
 // 注册swagger
@@ -216,6 +220,7 @@ wss.on('connection', (ws, req) => {
       message,
       timestamp,
     });
+
     await chatMessage.save();
 
     // 广播消息给所有连接的客户端

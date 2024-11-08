@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const UserController = require('../controller/users/users.js');
+
+// 用户登录
 /**
  * @swagger
  * /api/v1/user/login:
@@ -116,6 +118,7 @@ const UserController = require('../controller/users/users.js');
  *                   example: null
  */
 router.post('/login', UserController.login);
+
 // 用户注册
 /**
  * @swagger
@@ -232,6 +235,7 @@ router.post('/login', UserController.login);
  *                   example: null
  */
 router.post('/register', UserController.register);
+
 // 忘记密码
 /**
  * @swagger
@@ -321,6 +325,7 @@ router.post('/register', UserController.register);
  *                   example: null
  */
 router.post('/forgotPassword', UserController.forgotPassword);
+
 // 获取用户列表
 /**
  * @swagger
@@ -464,6 +469,7 @@ router.post('/forgotPassword', UserController.forgotPassword);
  *                   example: null
  */
 router.post('/getUserList', UserController.getUserList);
+
 // 修改用户信息
 /**
  * @swagger
@@ -572,6 +578,7 @@ router.post('/getUserList', UserController.getUserList);
  *                   example: null
  */
 router.post('/addOrEditUserInfo', UserController.addOrEditUserInfo);
+
 // 根据 id 获取用户信息
 /**
  * @swagger
@@ -670,6 +677,7 @@ router.post('/addOrEditUserInfo', UserController.addOrEditUserInfo);
  *                   example: null
  */
 router.get('/getUserInfoById/:id', UserController.getUserInfoById);
+
 // 删除用户
 /**
  * @swagger

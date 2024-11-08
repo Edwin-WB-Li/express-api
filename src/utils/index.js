@@ -2,6 +2,8 @@ const chalk = require('chalk');
 const jwt = require('jsonwebtoken');
 const axios = require('axios');
 const Joi = require('joi');
+const fs = require('fs');
+const path = require('path');
 // const ora = require('ora');
 // const spinner = ora('').start();
 // const logSymbols = require('log-symbols');
@@ -206,6 +208,48 @@ function getOS(userAgent) {
   return 'Unknown OS';
 }
 
+// 获取并打印 package.json 文件中的 dependencies 和 devDependencies
+async function getDependencies() {
+  try {
+    // 获取 package.json 文件的路径
+    const packageJsonPath = path.join(__dirname, '../../package.json');
+
+    // 读取 package.json 文件
+    const data = await fs.promises.readFile(packageJsonPath, 'utf8');
+
+    // 解析 JSON 数据
+    const packageJson = JSON.parse(data);
+
+    // 提取 dependencies 和 devDependencies
+    const dependencies = packageJson.dependencies || {};
+    const devDependencies = packageJson.devDependencies || {};
+
+    // 打印 dependencies
+    // console.log('Dependencies:');
+    // Object.keys(dependencies).forEach((dep) => {
+    //   console.log(`${dep}: ${dependencies[dep]}`);
+    // });
+
+    // // 打印 devDependencies
+    // console.log('\nDev Dependencies:');
+    // Object.keys(devDependencies).forEach((dep) => {
+    //   console.log(`${dep}: ${devDependencies[dep]}`);
+    // });
+
+    // 返回 dependencies 和 devDependencies
+    return { dependencies, devDependencies };
+  } catch (err) {
+    if (err.code === 'ENOENT') {
+      console.error('Error: package.json file not found at', packageJsonPath);
+    } else if (err instanceof SyntaxError) {
+      console.error('Error: Invalid JSON in package.json file');
+    } else {
+      console.error('Error:', err.message);
+    }
+    throw err; // 重新抛出错误，以便调用者可以处理
+  }
+}
+
 module.exports = {
   createToken,
   verifyToken,
@@ -218,6 +262,7 @@ module.exports = {
   fetchLocationsByIp,
   getDeviceType,
   getOS,
+  getDependencies,
   AMAP_API_KEY,
   AMAP_GEOCODED_INFORMATION_API_KEY,
   LOCATIONS_API_URL,
