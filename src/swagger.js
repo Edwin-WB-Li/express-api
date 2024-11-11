@@ -3,6 +3,12 @@ const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc'); // 修改 `swaggerDoc` 为 `swaggerJsDoc`
 // const relativePath = path.resolve(__dirname, 'routes', 'users.js');
+
+const apiUrl =
+  process.env.NODE_ENV === 'production'
+    ? process.env.PRODUCTION_URL
+    : process.env.LOCAL_URL;
+
 // // 配置 swagger-jsdoc 选项
 const options = {
   definition: {
@@ -15,7 +21,7 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3000',
+        url: apiUrl,
       }, // 根据实际情况调整
     ],
     components: {
