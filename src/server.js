@@ -38,9 +38,6 @@ const port = process.env.PORT || 3001;
 
 // MongoDB 连接
 // 连接 MongoDB Atlas 集群
-// const url =
-//   'mongodb+srv://edwin-wb-li:vnEugf4Vw7tAGOxE@express-cluster.pri8t.mongodb.net/node?retryWrites=true&w=majority';
-
 const MONGODB_URI =
   process.env.MONGODB_ATLAS_URL || process.env.MONGODB_LOCAL_URL;
 mongoose
@@ -59,12 +56,6 @@ app.use(
   cors({
     // 允许所有跨域
     origin: true,
-    // [
-    //   'https://next-express-project-lake.vercel.app',
-    //   'https://express-api-livid.vercel.app',
-    //   'https://restapi.amap.com/v3/weather/weatherInfo',
-    //   'http://localhost:3000',
-    // ],
     methods: ['GET', 'POST', 'PUT', 'DELETE'], // 明确列出允许的方法
     allowedHeaders: ['Content-Type', 'Authorization', 'x-requested-with'],
   })
@@ -256,21 +247,25 @@ const httpServer = app.listen(port, async (err) => {
     return;
   }
 
+  const url =
+    process.env.NODE_ENV === 'production'
+      ? process.env.PRODUCTION_URL
+      : process.env.LOCAL_URL;
+
   // 如果 Swagger 尚未打开过，则打开一次
   if (!hasOpenedSwagger()) {
     try {
       const { default: open } = await import('open'); // 动态导入 open 模块
-      await open(`http://localhost:${port}/api/v1/swagger-doc`); // 打开 Swagger 文档
+      // await open(`http://localhost:${port}/api/v1/swagger-doc`); // 打开 Swagger 文档
+      await open(`${url}/api/v1/swagger-doc`); // 打开 Swagger 文档
       markSwaggerAsOpened(); // 创建标志文件，记录打开状态
-      // process.env.OPENED_SWAGGER = 'true'; // 设置环境变量，标记为已打开
     } catch (err) {
       spinner.fail(chalk.red('Error opening Swagger documentation:', err));
     }
   }
-  spinner.succeed(chalk.green(`Local Running on http://localhost:${port}`));
-  spinner.succeed(
-    chalk.green(`Swagger Document: http://localhost:${port}/api/v1/swagger-doc`)
-  );
+  spinner.info(chalk.blue(`environment: ${process.env.NODE_ENV}`));
+  spinner.succeed(chalk.green(`Serve Running on ${url}`));
+  spinner.succeed(chalk.green(`Swagger Document: ${url}/api/v1/swagger-doc`));
 });
 
 // 将 WebSocket 服务器与 HTTP 服务器结合
