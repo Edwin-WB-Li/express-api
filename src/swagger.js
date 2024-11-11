@@ -1,8 +1,6 @@
-// const path = require('path');
 const express = require('express');
 const swaggerUI = require('swagger-ui-express');
-const swaggerJsDoc = require('swagger-jsdoc'); // 修改 `swaggerDoc` 为 `swaggerJsDoc`
-// const relativePath = path.resolve(__dirname, 'routes', 'users.js');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 const apiUrl =
   process.env.NODE_ENV === 'production'
