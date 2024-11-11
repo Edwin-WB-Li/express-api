@@ -24,14 +24,14 @@ const goodsRouter = require('./routes/goods');
 const usersRouter = require('./routes/users');
 const filesdRouter = require('./routes/files');
 const menusRouter = require('./routes/menus');
-const dictionariesRouter = require('./routes/dictionaries');
-const verificationCodeRouter = require('./routes/verificationCode');
 const commentsRouter = require('./routes/comments');
 const weathersRouter = require('./routes/weathers');
 const locationsRouter = require('./routes/locations');
 const devicesRouter = require('./routes/devices');
 const recordsRouter = require('./routes/records');
+const dictionariesRouter = require('./routes/dictionaries');
 const dependenciesRouter = require('./routes/dependencies');
+const verificationCodeRouter = require('./routes/verificationCode');
 
 // 端口
 const port = process.env.PORT || 3001;
@@ -44,7 +44,9 @@ mongoose
   .connect(MONGODB_URI)
   .then(() =>
     spinner.succeed(
-      chalk.green(`MongoDB连接成功: Connected to MongoDB Atlas with Mongoose`)
+      chalk.green(
+        `MongoDB连接成功: Successful Connected to MongoDB Atlas with Mongoose`
+      )
     )
   )
   .catch((err) => spinner.fail(chalk.red('MongoDB连接失败 -----> ', err)));
