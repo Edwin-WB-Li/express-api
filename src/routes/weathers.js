@@ -98,22 +98,6 @@ router.get('/getWeathersByIp', async (req, res) => {
   try {
     // token 校验
     await verifyToken(req, res);
-    // const schema = Joi.object({
-    //   // 城市编码
-    //   city: Joi.string().required(),
-    //   key: Joi.string().required(),
-    // });
-    // // 对请求参数进行验证
-    // const { error, value } = schema.validate(req.query);
-    // if (error) {
-    //   const errorMessage = handleError(error);
-    //   return res.status(400).json({
-    //     code: 400,
-    //     message: errorMessage,
-    //     data: null,
-    //   });
-    // }
-    // const { city } = value;
     const ip = await fetchIp();
     const locationsData = await fetchLocationsByIp({ key: AMAP_API_KEY, ip });
     const weathersData = await fetchWeathersByCityCode({

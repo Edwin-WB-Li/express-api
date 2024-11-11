@@ -79,7 +79,6 @@ const { verifyToken, getDependencies, handleServerError } = require('../utils');
  *                   example: null
  */
 router.get('/getDependenciesList', async (req, res) => {
-  // 城市编码
   try {
     // token 校验
     await verifyToken(req, res);

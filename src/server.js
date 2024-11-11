@@ -15,6 +15,7 @@ const spinner = ora({
   text: 'Service running...',
   spinner: 'dots',
 }).start();
+const moment = require('moment');
 
 // 引入swagger
 const swaggerInstall = require('./swagger');
@@ -254,6 +255,8 @@ const httpServer = app.listen(port, async (err) => {
       ? process.env.PRODUCTION_URL
       : process.env.LOCAL_URL;
 
+  const currentTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
+
   // 如果 Swagger 尚未打开过，则打开一次
   if (!hasOpenedSwagger()) {
     try {
@@ -265,6 +268,7 @@ const httpServer = app.listen(port, async (err) => {
       spinner.fail(chalk.red('Error opening Swagger documentation:', err));
     }
   }
+  spinner.info(chalk.blue(`------- ${currentTime} ----------`));
   spinner.info(chalk.blue(`environment: ${process.env.NODE_ENV}`));
   spinner.succeed(chalk.green(`Serve Running on ${url}`));
   spinner.succeed(chalk.green(`Swagger Document: ${url}/api/v1/swagger-doc`));

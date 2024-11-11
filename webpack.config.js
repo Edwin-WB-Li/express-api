@@ -40,6 +40,6 @@ module.exports = {
     ],
   },
   // 开发模式
-  mode: 'development',
+  // mode: 'development',
   devtool: 'inline-source-map',
 };
