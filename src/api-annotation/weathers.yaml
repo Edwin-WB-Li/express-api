@@ -1,0 +1,81 @@
+# 根据 IP 地址获取天气信息
+/api/v1/weathers/getWeathersByIp:
+  get:
+    summary: 根据 IP 地址获取天气信息
+    description: 根据当前请求的 IP 地址获取城市信息，并进一步获取该城市的天气信息
+    tags: [Weathers]
+    responses:
+      200:
+        description: 成功返回天气信息
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: 'Weather data fetched successfully'
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      city:
+                        type: string
+                        example: '北京市'
+                      adcode:
+                        type: string
+                        example: '110000'
+                      weather:
+                        type: string
+                        example: '晴'
+                      temperature:
+                        type: string
+                        example: '15'
+                      winddirection:
+                        type: string
+                        example: '北风'
+                      windpower:
+                        type: string
+                        example: '≤3级'
+                      humidity:
+                        type: string
+                        example: '20%'
+                      reporttime:
+                        type: string
+                        example: '2023-10-01 12:00:00'
+      400:
+        description: 获取天气数据失败
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '获取天气数据失败: 未知错误'
+                data:
+                  type: null
+                  example: null
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: '服务器内部错误'
+                data:
+                  type: null
+                  example: null

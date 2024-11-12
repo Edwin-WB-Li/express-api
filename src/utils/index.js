@@ -240,7 +240,7 @@ async function getDependencies() {
     return { dependencies, devDependencies };
   } catch (err) {
     if (err.code === 'ENOENT') {
-      console.error('Error: package.json file not found at', packageJsonPath);
+      console.error('Error: package.json file not found at');
     } else if (err instanceof SyntaxError) {
       console.error('Error: Invalid JSON in package.json file');
     } else {

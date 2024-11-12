@@ -1,0 +1,758 @@
+# 根据 role 获取菜单列表
+/api/v1/sysPermission/getMenuListByRole:
+  get:
+    summary: 获取指定角色的菜单列表
+    description: 根据提供的角色获取相应的菜单列表。
+    tags: [SysPermission]
+    parameters:
+      - in: query
+        name: role
+        description: 角色名称
+        required: true
+        schema:
+          type: string
+    responses:
+      200:
+        description: 成功返回菜单列表
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: 'success'
+                data:
+                  type: object
+                  properties:
+                    menu:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                          menuName:
+                            type: string
+                          code:
+                            type: string
+                          path:
+                            type: string
+      400:
+        description: 请求参数错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '请求参数错误'
+                data:
+                  type: null
+                  example: null
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: '服务器内部错误'
+                data:
+                  type: null
+                  example: null
+
+# 获取所有菜单列表
+/api/v1/sysPermission/getAllMenuList:
+  post:
+    summary: 获取所有菜单列表
+    description: 获取所有菜单列表, 不传查询条件，则查全部
+    tags: [SysPermission]
+    requestBody:
+      required: false
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              menuName:
+                type: string
+                description: 菜单名称
+                example: '账号管理'
+              role:
+                type: array
+                items:
+                  type: string
+                  description: 角色
+                  example: 'shop'
+              visible:
+                type: boolean
+                description: 展示
+                example: true
+    responses:
+      200:
+        description: 菜单列表获取成功
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: '删除成功'
+                data:
+                  type: object
+                  properties:
+                    list:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          menuName:
+                            type: string
+                            description: 菜单名称
+                            example: '账号管理'
+                          id:
+                            type: number
+                            description: 菜单 id
+                            example: 1
+                          menuType:
+                            type: string
+                            description: 菜单类型 （C菜单，F按钮）
+                            example: 'C'
+                          fatherId:
+                            type: number
+                            example: 0
+                          code:
+                            type: string
+                            description: 菜单 权限码
+                            example: 'default:dashboard'
+                          path:
+                            type: string
+                            description: 菜单 路径
+                            example: '/default/dashboard'
+      400:
+        description: 客户端错误(入参有误)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '入参有误'
+                data:
+                  type: null
+                  example: null
+                status:
+                  type: boolean
+                  example: false
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: 'Internal server error'
+                data:
+                  type: null
+                  example: null
+
+# 修改菜单详情
+/api/v1/sysPermission/editMenuListInfo:
+  post:
+    summary: 修改菜单详情
+    description: 修改指定菜单的详细信息
+    tags: [SysPermission]
+    security:
+      - BearerAuth: []
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - id
+              - fatherId
+              - _id
+              - menuName
+              - menuType
+              - type
+              - code
+              - path
+              - visible
+              - role
+              - status
+              - orderNum
+            properties:
+              id:
+                type: number
+                description: 菜单 ID
+                example: 1
+              fatherId:
+                type: number
+                description: 父菜单 ID
+                example: 0
+              _id:
+                type: string
+                description: 菜单唯一标识
+                example: '60a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p'
+              menuName:
+                type: string
+                description: 菜单名称
+                example: '账号管理'
+              menuType:
+                type: string
+                description: 菜单类型（C菜单，F按钮）
+                example: 'C'
+              type:
+                type: string
+                description: 类型
+                example: 'type'
+              code:
+                type: string
+                description: 菜单权限码
+                example: 'default:dashboard'
+              path:
+                type: string
+                description: 菜单路径
+                example: '/default/dashboard'
+              icon:
+                type: string
+                description: 图标
+                example: 'icon-name'
+              alIcon:
+                type: string
+                description: 另一个图标
+                example: 'al-icon-name'
+              visible:
+                type: boolean
+                description: 是否展示
+                example: true
+              role:
+                type: array
+                items:
+                  type: string
+                  description: 角色
+                  example: 'shop'
+              status:
+                type: boolean
+                description: 状态
+                example: true
+              orderNum:
+                type: number
+                description: 排序号
+                example: 1
+              update_time:
+                type: string
+                format: date-time
+                description: 更新时间
+                example: '2023-10-01T12:00:00Z'
+              newLinkFlag:
+                type: boolean
+                description: 新链接标志
+                example: false
+    responses:
+      200:
+        description: 菜单详情修改成功
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: '更新成功'
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    fatherId:
+                      type: number
+                      example: 0
+                    _id:
+                      type: string
+                      example: '60a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p'
+                    menuName:
+                      type: string
+                      example: '账号管理'
+                    menuType:
+                      type: string
+                      example: 'C'
+                    code:
+                      type: string
+                      example: 'default:dashboard'
+                    path:
+                      type: string
+                      example: '/default/dashboard'
+                    icon:
+                      type: string
+                      example: 'icon-name'
+                    alIcon:
+                      type: string
+                      example: 'al-icon-name'
+                    visible:
+                      type: boolean
+                      example: true
+                    role:
+                      type: array
+                      items:
+                        type: string
+                        example: 'shop'
+                    status:
+                      type: boolean
+                      example: true
+                    orderNum:
+                      type: number
+                      example: 1
+                    update_time:
+                      type: string
+                      format: date-time
+                      example: '2023-10-01T12:00:00Z'
+                    newLinkFlag:
+                      type: boolean
+                      example: false
+                status:
+                  type: boolean
+                  example: true
+      400:
+        description: 客户端错误(入参有误)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '入参有误'
+                data:
+                  type: null
+                  example: null
+                status:
+                  type: boolean
+                  example: false
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: 'Internal server error'
+                data:
+                  type: null
+                  example: null
+
+# 根据 id 获取菜单列表
+/api/v1/sysPermission/getMenuListInfoById/{id}:
+  get:
+    summary: 根据 ID 获取菜单详情
+    description: 根据提供的菜单 ID 获取详细的菜单信息
+    tags: [SysPermission]
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          example: '60a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p'
+        required: true
+        description: 菜单 ID
+    responses:
+      200:
+        description: 菜单详情获取成功
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: 'success'
+                data:
+                  type: object
+                  properties:
+                    menuName:
+                      type: string
+                      description: 菜单名称
+                      example: '账号管理'
+                    id:
+                      type: number
+                      description: 菜单 ID
+                      example: 1
+                    menuType:
+                      type: string
+                      description: 菜单类型（C菜单，F按钮）
+                      example: 'C'
+                    fatherId:
+                      type: number
+                      description: 父菜单 ID
+                      example: 0
+                    code:
+                      type: string
+                      description: 菜单权限码
+                      example: 'default:dashboard'
+                    path:
+                      type: string
+                      description: 菜单路径
+                      example: '/default/dashboard'
+      400:
+        description: 客户端错误(入参有误)
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '入参有误'
+                data:
+                  type: null
+                  example: null
+                status:
+                  type: boolean
+                  example: false
+      404:
+        description: 未找到指定 ID 的菜单
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 404
+                message:
+                  type: string
+                  example: '未找到指定ID的菜单'
+                data:
+                  type: null
+                  example: null
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: 'Internal server error'
+                data:
+                  type: null
+                  example: null
+
+# 添加 子菜单/按钮
+/api/v1/sysPermission/addSubmenusOrButton:
+  post:
+    summary: 添加菜单或按钮
+    description: 添加新的菜单或按钮，需要提供完整的字段信息。
+    tags: [SysPermission]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              id:
+                type: number
+                description: 菜单或按钮的唯一标识符
+                example: 1
+              role:
+                type: array
+                items:
+                  type: string
+                  description: 角色列表
+                  example: 'admin'
+              fatherId:
+                type: number
+                description: 父菜单 ID
+                example: 0
+              menuName:
+                type: string
+                description: 菜单或按钮名称
+                example: '账号管理'
+              menuType:
+                type: string
+                description: 菜单类型（C表示菜单，F表示按钮）
+                example: 'C'
+              code:
+                type: string
+                description: 菜单或按钮的权限码
+                example: 'default:dashboard'
+              path:
+                type: string
+                description: 菜单路径
+                example: '/default/dashboard'
+              icon:
+                type: string
+                description: 图标
+                example: 'icon-name'
+              alIcon:
+                type: string
+                description: 另一个图标（可选）
+                example: 'al-icon-name'
+              visible:
+                type: boolean
+                description: 是否可见
+                example: true
+              status:
+                type: boolean
+                description: 启用状态
+                example: true
+              orderNum:
+                type: number
+                description: 显示顺序号
+                example: 1
+              update_time:
+                type: string
+                format: date-time
+                description: 更新时间（可选，默认为当前时间）
+                example: '2023-01-01T12:00:00Z'
+              newLinkFlag:
+                type: boolean
+                description: 新链接标志
+                example: false
+    responses:
+      200:
+        description: 添加成功
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: '添加成功'
+                data:
+                  type: object
+                  properties:
+                    id:
+                      type: number
+                      example: 1
+                    fatherId:
+                      type: number
+                      example: 0
+                    menuName:
+                      type: string
+                      example: '账号管理'
+                    menuType:
+                      type: string
+                      example: 'C'
+                    code:
+                      type: string
+                      example: 'default:dashboard'
+                    path:
+                      type: string
+                      example: '/default/dashboard'
+                    icon:
+                      type: string
+                      example: 'icon-name'
+                    alIcon:
+                      type: string
+                      example: 'al-icon-name'
+                    visible:
+                      type: boolean
+                      example: true
+                    status:
+                      type: boolean
+                      example: true
+                    orderNum:
+                      type: number
+                      example: 1
+                    update_time:
+                      type: string
+                      format: date-time
+                      example: '2023-01-01T12:00:00Z'
+                    create_time:
+                      type: string
+                      format: date-time
+                      example: '2023-01-01T12:00:00Z'
+                    newLinkFlag:
+                      type: boolean
+                      example: false
+                    role:
+                      type: array
+                      items:
+                        type: string
+                        example: 'admin'
+      400:
+        description: 客户端错误（输入参数错误或数据冲突）
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '添加失败, id已存在,不能重复!'
+                data:
+                  type: null
+                  example: null
+                status:
+                  type: boolean
+                  example: false
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: '服务器错误'
+                data:
+                  type: null
+                  example: null
+
+# 根据 id 删除 菜单
+/api/v1/sysPermission/deleteMenusById:
+  post:
+    summary: 根据 ID 删除菜单
+    description: 根据提供的菜单 ID 列表删除菜单。
+    tags: [SysPermission]
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              type: string
+              description: 菜单 ID 列表
+              example: '64e89f7c4b7b400001a1b2c3'
+    responses:
+      200:
+        description: 菜单删除成功
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 200
+                message:
+                  type: string
+                  example: '用户删除成功'
+                data:
+                  type: object
+                  properties:
+                    deletedCount:
+                      type: integer
+                      description: 删除的菜单数量
+                      example: 2
+                status:
+                  type: boolean
+                  example: true
+      400:
+        description: 客户端错误（输入参数错误）
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 400
+                message:
+                  type: string
+                  example: '入参有误'
+                data:
+                  type: null
+                  example: null
+                status:
+                  type: boolean
+                  example: false
+      404:
+        description: 未找到任何匹配的菜单
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 404
+                message:
+                  type: string
+                  example: '未找到任何匹配的菜单'
+                data:
+                  type: null
+                  example: null
+                status:
+                  type: boolean
+                  example: false
+      500:
+        description: 服务器内部错误
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                code:
+                  type: integer
+                  example: 500
+                message:
+                  type: string
+                  example: '服务器错误'
+                data:
+                  type: null
+                  example: null

@@ -7,7 +7,7 @@ const apiUrl =
     ? process.env.PRODUCTION_URL
     : process.env.LOCAL_URL;
 
-// // 配置 swagger-jsdoc 选项
+// 配置 swagger-jsdoc 选项
 const options = {
   definition: {
     openapi: '3.0.0',
@@ -19,8 +19,9 @@ const options = {
     },
     servers: [
       {
+        // 根据实际情况调整
         url: apiUrl,
-      }, // 根据实际情况调整
+      },
     ],
     components: {
       securitySchemes: {
@@ -43,7 +44,7 @@ const options = {
     ],
   },
   // 去指定路由下收集 swagger 注释
-  apis: ['./src/routes/*.js'], // 注意路径是否正确
+  apis: ['./src/api-annotation/*.yaml'], // 注意路径是否正确
 };
 
 // 使用 swaggerJsDoc 生成规范的 swaggerSpec

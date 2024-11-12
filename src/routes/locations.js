@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const Joi = require('joi');
 const {
   verifyToken,
   handleError,
@@ -13,66 +12,6 @@ const {
 } = require('../utils/');
 
 // 获取 IP地址
-/**
- * @swagger
- * /api/v1/locations/getIp:
- *   get:
- *     summary: 获取当前 IP 地址
- *     description: 获取当前请求的 IP 地址
- *     tags: [Locations]
- *     responses:
- *       200:
- *         description: 成功返回 IP 地址
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: "ip fetched successfully"
- *                 data:
- *                   type: object
- *                   properties:
- *                     ip:
- *                       type: string
- *                       example: "192.168.1.1"
- *       400:
- *         description: 无法获取当前 IP 地址
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 400
- *                 message:
- *                   type: string
- *                   example: "无法获取当前ip信息,请稍后重试"
- *                 data:
- *                   type: null
- *                   example: null
- *       500:
- *         description: 服务器内部错误
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 500
- *                 message:
- *                   type: string
- *                   example: "服务器内部错误"
- *                 data:
- *                   type: null
- *                   example: null
- */
 router.get('/getIp', async (req, res) => {
   try {
     await verifyToken(req, res);
@@ -104,70 +43,6 @@ router.get('/getIp', async (req, res) => {
 });
 
 // 根据 Openapi 获取城市信息
-/**
- * @swagger
- * /api/v1/locations/getLocationsByOpenapi:
- *   get:
- *     summary: 根据 OpenAPI 获取城市信息
- *     description: 根据当前请求的 IP 地址获取城市信息
- *     tags: [Locations]
- *     responses:
- *       200:
- *         description: 成功返回城市信息
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: "locationData fetched successfully"
- *                 data:
- *                   type: object
- *                   properties:
- *                     locationsData:
- *                       type: object
- *                       example: {
- *                         city: "北京",
- *                         province: "北京市",
- *                         country: "中国"
- *                       }
- *       400:
- *         description: 无法获取当前 IP 地址或位置信息
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 400
- *                 message:
- *                   type: string
- *                   example: "无法获取当前ip信息"
- *                 data:
- *                   type: null
- *                   example: null
- *       500:
- *         description: 服务器内部错误
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 500
- *                 message:
- *                   type: string
- *                   example: "服务器内部错误"
- *                 data:
- *                   type: null
- *                   example: null
- */
 router.get('/getLocationsByOpenapi', async (req, res) => {
   // 城市编码
   try {
@@ -207,70 +82,6 @@ router.get('/getLocationsByOpenapi', async (req, res) => {
 });
 
 // 根据 Amap Api 获取城市信息
-/**
- * @swagger
- * /api/v1/locations/getLocationsByIp:
- *   get:
- *     summary: 根据 IP 地址获取城市信息
- *     description: 根据当前请求的 IP 地址获取城市信息
- *     tags: [Locations]
- *     responses:
- *       200:
- *         description: 成功返回城市信息
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: "locationData fetched successfully"
- *                 data:
- *                   type: object
- *                   properties:
- *                     locationsData:
- *                       type: object
- *                       example: {
- *                         city: "北京",
- *                         province: "北京市",
- *                         country: "中国"
- *                       }
- *       400:
- *         description: 无法获取当前 IP 地址或位置信息
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 400
- *                 message:
- *                   type: string
- *                   example: "无法获取当前ip信息"
- *                 data:
- *                   type: null
- *                   example: null
- *       500:
- *         description: 服务器内部错误
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 500
- *                 message:
- *                   type: string
- *                   example: "服务器内部错误"
- *                 data:
- *                   type: null
- *                   example: null
- */
 router.get('/getLocationsByIp', async (req, res) => {
   try {
     await verifyToken(req, res);
@@ -306,80 +117,6 @@ router.get('/getLocationsByIp', async (req, res) => {
 });
 
 // 根据城市获取城市编码信息
-/**
- * @swagger
- * /api/v1/locations/getGeocodedInformationByCity:
- *   get:
- *     summary: 根据 IP地址 获取所在地，然后根据所在地获取城市编码信息
- *     description: 根据当前请求的 IP 地址获取城市信息，并进一步获取城市的地理编码信息
- *     tags: [Locations]
- *     responses:
- *       200:
- *         description: 成功返回地理编码信息
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 200
- *                 message:
- *                   type: string
- *                   example: "data fetched successfully"
- *                 data:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       formatted_address:
- *                         type: string
- *                         example: "北京市朝阳区"
- *                       geocode:
- *                         type: string
- *                         example: "116.404177,39.913818"
- *                       province:
- *                         type: string
- *                         example: "北京市"
- *                       city:
- *                         type: string
- *                         example: "北京市"
- *                       district:
- *                         type: string
- *                         example: "朝阳区"
- *       400:
- *         description: 获取数据失败
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 400
- *                 message:
- *                   type: string
- *                   example: "获取数据失败: 未知错误"
- *                 data:
- *                   type: null
- *                   example: null
- *       500:
- *         description: 服务器内部错误
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 code:
- *                   type: integer
- *                   example: 500
- *                 message:
- *                   type: string
- *                   example: "服务器内部错误"
- *                 data:
- *                   type: null
- *                   example: null
- */
 router.get('/getGeocodedInformationByCity', async (req, res) => {
   try {
     await verifyToken(req, res);
