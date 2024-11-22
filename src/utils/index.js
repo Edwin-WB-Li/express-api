@@ -4,6 +4,7 @@ const axios = require('axios');
 const Joi = require('joi');
 const fs = require('fs');
 const path = require('path');
+const util = require('util');
 // const ora = require('ora');
 // const spinner = ora('').start();
 // const logSymbols = require('log-symbols');
@@ -137,7 +138,7 @@ function createToken(data, expiresInHours = 24) {
 
 // 校验 token
 function verifyToken(req, res) {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve, _reject) => {
     // 接收 token
     const token = req.headers.authorization;
     if (!token) {
@@ -211,11 +212,13 @@ function getOS(userAgent) {
 // 获取并打印 package.json 文件中的 dependencies 和 devDependencies
 async function getDependencies() {
   try {
+    const readFile = util.promisify(fs.readFile);
     // 获取 package.json 文件的路径
     const packageJsonPath = path.join(__dirname, '../../package.json');
 
     // 读取 package.json 文件
-    const data = await fs.promises.readFile(packageJsonPath, 'utf8');
+    // const data = await fs.promises.readFile(packageJsonPath, 'utf8');
+    const data = await readFile(packageJsonPath, 'utf8');
 
     // 解析 JSON 数据
     const packageJson = JSON.parse(data);

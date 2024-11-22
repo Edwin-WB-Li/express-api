@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 // WebSocket
@@ -72,12 +72,15 @@ app.get('/', (_req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-app.use(bodyParser.json());
-app.use(
-  bodyParser.urlencoded({
-    extended: true,
-  })
-);
+// app.use(bodyParser.json());
+// app.use(
+//   bodyParser.urlencoded({
+//     extended: true,
+//   })
+// );
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // 添加中间件，记录请求的路径和方法
 app.use((req, res, next) => {
@@ -147,14 +150,14 @@ app.use((err, _req, res, next) => {
 });
 
 // 标志文件路径
-const openFlagPath = path.resolve(__dirname, '../.swagger-opened');
+// const openFlagPath = path.resolve(__dirname, '../.swagger-opened');
 
-// 检查标志文件是否存在
-const hasOpenedSwagger = () => fs.existsSync(openFlagPath);
+// // 检查标志文件是否存在
+// const hasOpenedSwagger = () => fs.existsSync(openFlagPath);
 
-// 写入标志文件
-const markSwaggerAsOpened = () =>
-  fs.writeFileSync(openFlagPath, 'swagger opened', 'utf-8');
+// // 写入标志文件
+// const markSwaggerAsOpened = () =>
+//   fs.writeFileSync(openFlagPath, 'swagger opened', 'utf-8');
 
 // 优雅关闭函数
 const gracefulShutdown = async (httpServer) => {
@@ -163,10 +166,10 @@ const gracefulShutdown = async (httpServer) => {
     spinner.fail(chalk.red('HTTP server closed'));
     await mongoose.connection.close();
     spinner.fail(chalk.red('MongoDB connection closed'));
-    process.exit(0); // 关闭进程
+    // process.exit(0); // 关闭进程
   } catch (err) {
     console.error(chalk.red('Error during graceful shutdown:', err));
-    process.exit(1); // 强制关闭进程
+    // process.exit(1); // 强制关闭进程
   }
 };
 
@@ -258,16 +261,16 @@ const httpServer = app.listen(port, async (err) => {
   const currentTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
 
   // 如果 Swagger 尚未打开过，则打开一次
-  if (!hasOpenedSwagger()) {
-    try {
-      const { default: open } = await import('open'); // 动态导入 open 模块
-      // await open(`http://localhost:${port}/api/v1/swagger-doc`); // 打开 Swagger 文档
-      await open(`${url}/api/v1/swagger-doc`); // 打开 Swagger 文档
-      markSwaggerAsOpened(); // 创建标志文件，记录打开状态
-    } catch (err) {
-      spinner.fail(chalk.red('Error opening Swagger documentation:', err));
-    }
-  }
+  // if (!hasOpenedSwagger()) {
+  //   try {
+  //     const { default: open } = await import('open'); // 动态导入 open 模块
+  //     // await open(`http://localhost:${port}/api/v1/swagger-doc`); // 打开 Swagger 文档
+  //     await open(`${url}/api/v1/swagger-doc`); // 打开 Swagger 文档
+  //     markSwaggerAsOpened(); // 创建标志文件，记录打开状态
+  //   } catch (err) {
+  //     spinner.fail(chalk.red('Error opening Swagger documentation:', err));
+  //   }
+  // }
   spinner.info(chalk.blue(`------- ${currentTime} ----------`));
   spinner.info(chalk.blue(`environment: ${process.env.NODE_ENV}`));
   spinner.succeed(chalk.green(`Serve Running on ${url}`));
