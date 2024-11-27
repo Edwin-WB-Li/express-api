@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const {
   verifyToken,
-  handleError,
   fetchIp,
   fetchLocations,
   fetchLocationsByIp,
@@ -62,7 +61,7 @@ router.get('/getLocationsByOpenapi', async (req, res) => {
     if (!locationsData) {
       return res.status(400).json({
         code: 400,
-        message: `无法获取当前所在位置信息: ${locationsResponse?.data?.msg}`,
+        message: `无法获取当前所在位置信息: ${locationsData?.data?.msg}`,
         data: null,
       });
     }
@@ -97,7 +96,7 @@ router.get('/getLocationsByIp', async (req, res) => {
     if (!locationsData) {
       return res.status(400).json({
         code: 400,
-        message: `无法获取当前所在位置信息: ${locationsResponse?.data?.msg}`,
+        message: `无法获取当前所在位置信息: ${locationsData?.data?.msg}`,
         data: null,
       });
     }

@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "nodemon ./src/index.js",
-    "lint": "eslint . --fix",
+    "dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
     "start": "npm run dev",
     "start:dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
     "start:prod": "cross-env NODE_ENV=production nodemon ./src/index.js",
+    "lint": "eslint . --fix",
     "format": "prettier --write ."
   },
   "dependencies": {
@@ -51,6 +51,7 @@
     "cross-env": "^7.0.3",
     "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.2.1",
     "globals": "^15.11.0",
