@@ -1,10 +1,11 @@
 {
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "eslint.options": {
+    "extensions": [".js", ".jsx", ".ts", ".tsx"]
   },
-  "[javascriptreact]": {
+  "prettier.requireConfig": true,
+  "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[json]": {
