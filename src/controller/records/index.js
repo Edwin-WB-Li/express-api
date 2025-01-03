@@ -1,7 +1,7 @@
 // 引入 joi 进行输入验证
 // const Joi = require('joi');
 const recordsModel = require('../../models/records/recordsModel.js');
-const { verifyToken, handleError, handleServerError } = require('../../utils');
+const { verifyToken, handleServerError } = require('../../utils');
 class RecordsController {
 	static async getChattingRecords(req, res) {
 		try {

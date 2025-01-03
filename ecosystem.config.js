@@ -9,14 +9,14 @@ module.exports = {
 				NODE_ENV: 'development',
 				PORT: process.env.PORT,
 				MONGODB_ATLAS_URL: process.env.MONGODB_ATLAS_URL,
-				MONGODB_LOCAL_URL: process.env.MONGODB_LOCAL_URL
+				MONGODB_LOCAL_URL: process.env.MONGODB_LOCAL_URL,
 			},
 			env_production: {
 				NODE_ENV: 'production',
 				PORT: process.env.PORT,
 				MONGODB_ATLAS_URL: process.env.MONGODB_ATLAS_URL,
-				MONGODB_LOCAL_URL: process.env.MONGODB_LOCAL_URL
-			}
-		}
-	]
+				MONGODB_LOCAL_URL: process.env.MONGODB_LOCAL_URL,
+			},
+		},
+	],
 };

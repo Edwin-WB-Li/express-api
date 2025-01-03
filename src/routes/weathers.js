@@ -5,7 +5,7 @@ const {
 	fetchIp,
 	fetchLocationsByIp,
 	fetchWeathersByCityCode,
-	handleError,
+	// handleError,
 	handleServerError,
 	AMAP_API_KEY,
 } = require('../utils/');

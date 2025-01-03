@@ -4,7 +4,6 @@ const { verifyToken, getDeviceType, getOS, handleServerError } = require('../uti
 
 // 获取设备信息
 router.get('/getDevicesInformation', async (req, res) => {
-	// 城市编码
 	try {
 		// token 校验
 		await verifyToken(req, res);

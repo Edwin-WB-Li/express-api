@@ -10,9 +10,9 @@ const options = {
 		openapi: '3.0.0',
 		info: {
 			// 标题信息
-			title: 'Express 后台API文档',
+			title: 'Express-Api 接口文档',
 			version: '1.0.0',
-			description: '企业级管理后台共用接口API文档',
+			description: '基于 Express + MONGODB_ATLAS + Mongoose + Swagger 构建的 Api 接口 ',
 		},
 		servers: [
 			{

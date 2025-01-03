@@ -134,7 +134,7 @@ function createToken(data, expiresInHours = 24) {
 
 // 校验 token
 function verifyToken(req, res) {
-	return new Promise((resolve, _reject) => {
+	return new Promise(resolve => {
 		// 接收 token
 		const token = req.headers.authorization;
 		if (!token) {

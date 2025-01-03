@@ -106,7 +106,7 @@ router.post('/send-verification-code', async (req, res) => {
 		};
 
 		// 发送验证码邮件
-		transporter.sendMail(mailOptions, (error, info) => {
+		transporter.sendMail(mailOptions, error => {
 			if (error) {
 				const errorMessage = handleServerError(error);
 				console.error('Error sending email:', error);

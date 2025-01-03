@@ -1,8 +1,8 @@
 // 引入 joi 进行输入验证
-const Joi = require('joi');
+// const Joi = require('joi');
 // const moment = require('moment');
 const menuItemsModel = require('../../models/menuItems/menuItemsModel.js');
-const { verifyToken, handleError, handleServerError } = require('../../utils/index.js');
+const { verifyToken, handleServerError } = require('../../utils/index.js');
 
 class MenuItemsController {
 	// // 根据 role 获取菜单列表 GET
