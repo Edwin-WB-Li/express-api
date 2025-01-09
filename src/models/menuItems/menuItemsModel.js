@@ -31,15 +31,5 @@ module.exports = mongoose.model(
 				},
 			},
 		],
-		// create_time: {
-		// 	type: Date,
-		// 	default: Date.now,
-		// 	required: false,
-		// },
-		// update_time: {
-		// 	type: Date,
-		// 	default: Date.now,
-		// 	required: false,
-		// },
 	}),
 );

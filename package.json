@@ -3,12 +3,13 @@
 	"version": "1.0.0",
 	"private": true,
 	"scripts": {
+		"pm2": "pm2 start ecosystem.config.js --env production",
 		"dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
 		"start": "npm run dev",
 		"start:dev": "cross-env NODE_ENV=development nodemon ./src/index.js",
 		"start:prod": "cross-env NODE_ENV=production nodemon ./src/index.js",
-		"lint:eslint": "eslint --fix --ext .js,.ts,.tsx ./src",
-		"lint:prettier": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,html,md}\" \".eslintrc.js\"",
+		"lint:fix": "eslint --fix --ext .js,.ts,.tsx ./src",
+		"lint:format": "prettier --write --loglevel warn \"src/**/*.{js,ts,json,tsx,css,less,scss,html,md}\" \".eslintrc.js\"",
 		"format": "prettier --write ."
 	},
 	"dependencies": {
