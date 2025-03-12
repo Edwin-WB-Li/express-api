@@ -1,24 +1,21 @@
 ```bash
 npm install
 running:
-npm start
-# or
-npm start:dev
-# or
-npm start:prod
+npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3020](http://localhost:3020) with your browser to see the result.
 
 ### 上线部署
 
 ```bash
 启动：
+  npm run pm2
+  # or
 	pm2 start ecosystem.config.js --env production
 
 保存运行：
   pm2 save
-
 
 其他命令：
   停止所有：
@@ -28,5 +25,5 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
     pm2 list
 
   停止应用程序：
-    pm2 stop app.js
+    pm2 stop <id或名称>
 ```

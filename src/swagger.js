@@ -1,8 +1,9 @@
 const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
+const { NODE_ENV, PRODUCTION_URL, LOCAL_URL, PORT, API_VERSION } = process.env;
 
-const apiUrl = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL : process.env.LOCAL_URL;
+const apiUrl = NODE_ENV === 'production' ? PRODUCTION_URL : `${LOCAL_URL}:${PORT}`;
 
 // 配置 swagger-jsdoc 选项
 const options = {
@@ -12,7 +13,7 @@ const options = {
 			// 标题信息
 			title: 'Express-Api 接口文档',
 			version: '1.0.0',
-			description: '基于 Express + MONGODB_ATLAS + Mongoose + Swagger 构建的 Api 接口 ',
+			description: '基于 Express + Mongoose + Mongodb_Atlas  + Swagger 构建的 Api 接口 ',
 		},
 		servers: [
 			{
@@ -60,10 +61,10 @@ const swaggerInstall = function (app) {
 	}
 
 	// 开放 JSON 格式的文档接口
-	app.get('/api/v1/swagger.json', swaggerJson);
+	app.get(`${API_VERSION}/swagger.json`, swaggerJson);
 
 	// 使用 swaggerSpec 生成 swagger 文档页面，并开放在指定路由 '/swagger'
-	app.use('/api/v1/swagger-doc', swaggerUI.serve, swaggerUI.setup(swaggerSpec));
+	app.use(`${API_VERSION}/swagger-doc`, swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 };
 
 // 导出 `swaggerInstall` 方法供其他模块使用

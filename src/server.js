@@ -19,7 +19,7 @@ const moment = require('moment');
 
 // 引入swagger
 const swaggerInstall = require('./swagger');
-const version = '/api/v1';
+// const version = '/api/v1';
 // 导入路由
 const goodsRouter = require('./routes/goods');
 const usersRouter = require('./routes/users');
@@ -35,12 +35,14 @@ const dictionariesRouter = require('./routes/dictionaries');
 const dependenciesRouter = require('./routes/dependencies');
 const verificationCodeRouter = require('./routes/verificationCode');
 
+const { PORT, MONGODB_ATLAS_URL, MONGODB_LOCAL_URL, NODE_ENV, PRODUCTION_URL, LOCAL_URL, API_VERSION } = process.env;
+
 // 端口
-const port = process.env.PORT || 3001;
+const port = PORT || 3001;
 
 // MongoDB 连接
 // 连接 MongoDB Atlas 集群
-const MONGODB_URI = process.env.MONGODB_ATLAS_URL || process.env.MONGODB_LOCAL_URL;
+const MONGODB_URI = MONGODB_ATLAS_URL || MONGODB_LOCAL_URL;
 mongoose
 	.connect(MONGODB_URI)
 	.then(() => spinner.succeed(chalk.green(`MongoDB连接成功: Successful Connected to MongoDB Atlas with Mongoose`)))
@@ -104,19 +106,19 @@ app.use((req, res, next) => {
 	next();
 });
 
-app.use(`${version}/good`, goodsRouter);
-app.use(`${version}/user`, usersRouter);
-app.use(`${version}/file`, filesdRouter);
-app.use(`${version}/sysPermission`, menusRouter);
-app.use(`${version}/menuItems`, menuItemsRouter);
-app.use(`${version}/dictionaries`, dictionariesRouter);
-app.use(`${version}/comments`, commentsRouter);
-app.use(`${version}/devices`, devicesRouter);
-app.use(`${version}/locations`, locationsRouter);
-app.use(`${version}/weathers`, weathersRouter);
-app.use(`${version}/records`, recordsRouter);
-app.use(`${version}/dependencies`, dependenciesRouter);
-app.use(`${version}`, verificationCodeRouter);
+app.use(`${API_VERSION}/good`, goodsRouter);
+app.use(`${API_VERSION}/user`, usersRouter);
+app.use(`${API_VERSION}/file`, filesdRouter);
+app.use(`${API_VERSION}/sysPermission`, menusRouter);
+app.use(`${API_VERSION}/menuItems`, menuItemsRouter);
+app.use(`${API_VERSION}/dictionaries`, dictionariesRouter);
+app.use(`${API_VERSION}/comments`, commentsRouter);
+app.use(`${API_VERSION}/devices`, devicesRouter);
+app.use(`${API_VERSION}/locations`, locationsRouter);
+app.use(`${API_VERSION}/weathers`, weathersRouter);
+app.use(`${API_VERSION}/records`, recordsRouter);
+app.use(`${API_VERSION}/dependencies`, dependenciesRouter);
+app.use(`${API_VERSION}`, verificationCodeRouter);
 
 // 注册swagger
 swaggerInstall(app);
@@ -124,7 +126,7 @@ swaggerInstall(app);
 // 处理未找到的路由
 app.use((req, res, next) => {
 	// 如果是 API 请求且未找到对应的路由，则返回 404 页面
-	if (req.url.startsWith(version)) {
+	if (req.url.startsWith(API_VERSION)) {
 		res.sendFile(path.join(__dirname, '../public/404.html'));
 	} else {
 		next();
@@ -144,16 +146,6 @@ app.use((err, _req, res, next) => {
 	res.status(500).send(err?.stack ?? 'Something broke!');
 	return;
 });
-
-// 标志文件路径
-// const openFlagPath = path.resolve(__dirname, '../.swagger-opened');
-
-// // 检查标志文件是否存在
-// const hasOpenedSwagger = () => fs.existsSync(openFlagPath);
-
-// // 写入标志文件
-// const markSwaggerAsOpened = () =>
-//   fs.writeFileSync(openFlagPath, 'swagger opened', 'utf-8');
 
 // 优雅关闭函数
 const gracefulShutdown = async httpServer => {
@@ -239,25 +231,13 @@ const httpServer = app.listen(port, async err => {
 		return;
 	}
 
-	const url = process.env.NODE_ENV === 'production' ? process.env.PRODUCTION_URL : process.env.LOCAL_URL;
+	const swagger_url = NODE_ENV === 'production' ? PRODUCTION_URL : `${LOCAL_URL}:${port}${API_VERSION}`;
 
 	const currentTime = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss');
 
-	// 如果 Swagger 尚未打开过，则打开一次
-	// if (!hasOpenedSwagger()) {
-	//   try {
-	//     const { default: open } = await import('open'); // 动态导入 open 模块
-	//     // await open(`http://localhost:${port}/api/v1/swagger-doc`); // 打开 Swagger 文档
-	//     await open(`${url}/api/v1/swagger-doc`); // 打开 Swagger 文档
-	//     markSwaggerAsOpened(); // 创建标志文件，记录打开状态
-	//   } catch (err) {
-	//     spinner.fail(chalk.red('Error opening Swagger documentation:', err));
-	//   }
-	// }
 	spinner.info(chalk.blue(`------- ${currentTime} ----------`));
-	spinner.info(chalk.blue(`environment: ${process.env.NODE_ENV}`));
-	spinner.succeed(chalk.green(`Serve Running on ${url}`));
-	spinner.succeed(chalk.green(`Swagger Document: ${url}/api/v1/swagger-doc`));
+	spinner.succeed(chalk.green(`Environment: ${NODE_ENV}`));
+	spinner.succeed(chalk.green(`Swagger Document: ${swagger_url}/swagger-doc`));
 });
 
 // 将 WebSocket 服务器与 HTTP 服务器结合
