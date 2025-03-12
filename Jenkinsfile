@@ -15,16 +15,16 @@ pipeline {
 			}
 		}
 		// 阶段2：安装依赖
-		// stage('Install Dependencies') {
-		// 	steps {
-		// 		script {
-    //       sh 'node -v'
-    //       sh 'which npm'      // 检查 npm 是否存在
-    //       sh "npm ci --registry=${NPM_REGISTRY}"
-    //       // sh 'npm ci'
-		// 		}
-		// 	}
-		// }
+		stage('Install Dependencies') {
+			steps {
+				script {
+          sh 'node -v'
+          sh 'which npm'      // 检查 npm 是否存在
+          sh "npm ci --registry=${NPM_REGISTRY}"
+          // sh 'npm ci'
+				}
+			}
+		}
     // 阶段3：格式化 & 代码检查
 		stage('Format Code & Lint Code') {
       steps {
