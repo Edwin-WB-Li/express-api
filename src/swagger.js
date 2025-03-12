@@ -1,8 +1,9 @@
 const express = require('express');
 const swaggerUI = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
-const { NODE_ENV, PRODUCTION_URL, LOCAL_URL, PORT, API_VERSION } = process.env;
+const path = require('path');
 
+const { NODE_ENV, PRODUCTION_URL, LOCAL_URL, PORT, API_VERSION } = process.env;
 const apiUrl = NODE_ENV === 'production' ? PRODUCTION_URL : `${LOCAL_URL}:${PORT}`;
 
 // 配置 swagger-jsdoc 选项
@@ -42,7 +43,7 @@ const options = {
 		],
 	},
 	// 去指定路由下收集 swagger 注释
-	apis: ['./src/api-annotation/*.yaml'], // 注意路径是否正确
+	apis: [path.resolve(__dirname, './api-annotation/users.yaml'), path.resolve(__dirname, './api-annotation/*.yaml')], // 注意路径是否正确
 };
 
 // 使用 swaggerJsDoc 生成规范的 swaggerSpec
