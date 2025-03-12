@@ -41,7 +41,6 @@ class UsersController {
 					code: 400,
 					message: '账号不存在',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -50,7 +49,6 @@ class UsersController {
 					code: 400,
 					message: '账号已停用，请联系管理员',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -66,7 +64,6 @@ class UsersController {
 					code: 400,
 					message: '密码错误',
 					data: null,
-					status: false,
 				});
 			}
 			const userInfo = {
@@ -145,7 +142,6 @@ class UsersController {
 					code: 400,
 					message: '账号已存在',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -158,7 +154,6 @@ class UsersController {
 					code: 400,
 					message: '昵称已存在',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -189,7 +184,6 @@ class UsersController {
 					id: savedUser.id,
 					username: savedUser.username,
 				},
-				status: true,
 			});
 			// }
 		} catch (error) {
@@ -232,7 +226,6 @@ class UsersController {
 					code: 404,
 					message: '账号不存在',
 					data: null,
-					status: false,
 				});
 			} else {
 				// 验证旧密码是否正确
@@ -243,7 +236,6 @@ class UsersController {
 						code: 400,
 						message: '旧密码错误',
 						data: null,
-						status: false,
 					});
 				} else {
 					// 加密新密码
@@ -262,7 +254,6 @@ class UsersController {
 						data: {
 							username,
 						},
-						status: true,
 					});
 				}
 			}
@@ -483,7 +474,6 @@ class UsersController {
 					code: 400,
 					message: password ? '新增失败，用户名已存在' : '更新失败，用户名已存在',
 					data: null,
-					status: false,
 				});
 			}
 			// 用户信息
@@ -520,7 +510,6 @@ class UsersController {
 						data: {
 							username,
 						},
-						status: true,
 					});
 				}
 			} else {
@@ -548,7 +537,6 @@ class UsersController {
 					data: {
 						username,
 					},
-					status: true,
 				});
 			}
 		} catch (error) {
@@ -591,7 +579,6 @@ class UsersController {
 					code: 404,
 					message: '未找到任何匹配的用户',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -601,7 +588,6 @@ class UsersController {
 				data: {
 					deletedCount: result.deletedCount,
 				},
-				status: true,
 			});
 		} catch (error) {
 			const errorMessage = handleServerError(error);

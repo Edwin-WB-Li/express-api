@@ -195,7 +195,6 @@ class MenuController {
 				data: {
 					deletedCount: result.deletedCount,
 				},
-				status: true,
 			});
 		} catch (error) {
 			const errorMessage = handleServerError(error);
@@ -273,7 +272,6 @@ class MenuController {
 					code: 400,
 					message: '更新失败, 权限码已存在,不能重复!',
 					data: null,
-					status: false,
 				});
 			}
 			// 检查更新后的 path 是否已被其他用户使用
@@ -289,7 +287,6 @@ class MenuController {
 					code: 400,
 					message: '更新失败, 路径已存在,不能重复',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -327,14 +324,12 @@ class MenuController {
 					code: 400,
 					message: '未找到',
 					data: null,
-					status: false,
 				});
 			}
 			res.status(200).json({
 				code: 200,
 				message: '更新成功',
 				data,
-				status: true,
 			});
 		} catch (error) {
 			const errorMessage = handleServerError(error);
@@ -405,7 +400,6 @@ class MenuController {
 					code: 400,
 					message: '添加失败, id已存在,不能重复!',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -419,7 +413,6 @@ class MenuController {
 					code: 400,
 					message: '添加失败, 权限码已存在,不能重复!',
 					data: null,
-					status: false,
 				});
 			}
 
@@ -435,7 +428,6 @@ class MenuController {
 						code: 400,
 						message: '添加失败, 路径已存在,不能重复',
 						data: null,
-						status: false,
 					});
 				}
 			}
