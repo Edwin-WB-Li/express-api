@@ -117,5 +117,11 @@ pipeline {
       // 清理工作空间（可选）
       cleanWs()
     }
+		success {
+      githubNotify status: 'SUCCESS', context: 'Jenkins CI'  // 反馈成功状态[6](@ref)
+    }
+    failure {
+      githubNotify status: 'FAILURE', context: 'Jenkins CI'  // 反馈失败状态
+    }
 	}
 }
