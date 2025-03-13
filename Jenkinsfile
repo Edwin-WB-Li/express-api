@@ -10,18 +10,18 @@ pipeline {
   tools {
     nodejs 'node 20' // 确保与全局配置名称一致
   }
-  triggers {
-  // 使用正确的触发器名称
-  githubPullRequests(
-    triggerMode: GitHubPRTriggerMode.HOOK,  // 需配合 Webhook
-    events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
-  )
-  // githubPullRequests(
-  //   triggerMode: 'HEAVY_HOOK',
-  //   events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED],
-  //   // branches: [new GitHubPRBranch('dev')]
-  // )
-  }
+  // triggers {
+  //   // 使用正确的触发器名称
+  //   githubPullRequests(
+  //     triggerMode: GitHubPRTriggerMode.HOOK,  // 需配合 Webhook
+  //     events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
+  //   )
+  // }
+    // githubPullRequests(
+    //   triggerMode: 'HEAVY_HOOK',
+    //   events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED],
+    //   // branches: [new GitHubPRBranch('dev')]
+    // )
   stages {
     // 阶段1：拉取代码
     stage('Git Check') {
