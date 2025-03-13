@@ -21,7 +21,7 @@ pipeline {
   //   events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED],
   //   // branches: [new GitHubPRBranch('dev')]
   // )
-}
+  }
   stages {
     // 阶段1：拉取代码
     stage('Git Check') {
@@ -134,7 +134,7 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build Passed', 
-          credentialsId: env.GITHUB_CREDENTIALS_ID
+          credentialsId: env.GITHUB_CREDENTIALS_ID,
           status: 'SUCCESS', 
           sha: commitSha,
           targetUrl: "${env.BUILD_URL}"
@@ -147,7 +147,7 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build Failed', 
-          credentialsId: env.GITHUB_CREDENTIALS_ID
+          credentialsId: env.GITHUB_CREDENTIALS_ID,
           status: 'FAILURE', 
           sha: commitSha,
           targetUrl: "${env.BUILD_URL}"
