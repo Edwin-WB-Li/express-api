@@ -134,6 +134,7 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build Passed', 
+          credentialsId: env.GITHUB_CREDENTIALS_ID
           status: 'SUCCESS', 
           sha: commitSha,
           targetUrl: "${env.BUILD_URL}"
@@ -146,6 +147,7 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build Failed', 
+          credentialsId: env.GITHUB_CREDENTIALS_ID
           status: 'FAILURE', 
           sha: commitSha,
           targetUrl: "${env.BUILD_URL}"
