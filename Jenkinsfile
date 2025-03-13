@@ -133,7 +133,7 @@ pipeline {
     NPM_REGISTRY = 'https://registry.npmmirror.com' // 国内镜像加速
     APP_NAME = 'express-api' // 项目名称
     // 通过环境变量区分 PR 构建
-    IS_PR = env.CHANGE_ID ? 'true' : 'false' // CHANGE_ID 存在时为 PR 构建
+    // IS_PR = env.CHANGE_ID ? 'true' : 'false' // CHANGE_ID 存在时为 PR 构建
   }
   tools {
     nodejs 'node 20' // 确保与全局配置名称一致
