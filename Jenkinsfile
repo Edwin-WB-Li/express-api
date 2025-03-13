@@ -179,15 +179,15 @@ pipeline {
       }
     }
     // 阶段4：构建产物压缩（仅非 PR 构建执行）
-    stage('Compressed Files') {
-      when {
-        expression { env.IS_PR == 'false' } // 非 PR 构建时执行
-      }
-      steps {
-        sh "zip -r ${APP_NAME}.zip . -x 'node_modules/*'"
-        archiveArtifacts artifacts: '*.zip', allowEmptyArchive: false
-      }
-    }
+    // stage('Compressed Files') {
+    //   when {
+    //     expression { env.IS_PR == 'false' } // 非 PR 构建时执行
+    //   }
+    //   steps {
+    //     sh "zip -r ${APP_NAME}.zip . -x 'node_modules/*'"
+    //     archiveArtifacts artifacts: '*.zip', allowEmptyArchive: false
+    //   }
+    // }
     // 阶段5：Nginx 部署（仅非 PR 构建执行）
     // stage('Deploy TO Nginx') {
     //   when {
