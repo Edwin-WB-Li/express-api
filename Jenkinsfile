@@ -133,7 +133,7 @@ pipeline {
     NPM_REGISTRY = 'https://registry.npmmirror.com' // 国内镜像加速
     APP_NAME = 'express-api' // 项目名称
     // 通过环境变量区分 PR 构建
-    IS_PR = env.CHANGE_ID ? 'true' : 'false' // CHANGE_ID 存在时为 PR 构建
+    // IS_PR = env.CHANGE_ID ? 'true' : 'false' // CHANGE_ID 存在时为 PR 构建
   }
   tools {
     nodejs 'node 20' // 确保与全局配置名称一致
@@ -152,7 +152,7 @@ pipeline {
       steps {
         checkout([
           $class: 'GitSCM',
-          branches: [[name: env.GIT_BRANCH]], // 自动处理 PR 分支
+          branches: [[name: env.ghprbSourceBranch ?: 'dev']], // 自动处理 PR 分支
           extensions: [
             // 合并 PR 到目标分支（如 main）
             [$class: 'PreBuildMerge', options: [mergeRemote: 'origin', mergeTarget: 'master']]
@@ -235,7 +235,7 @@ pipeline {
     always {    
       script {
         // 仅在非 PR 构建时发送邮件
-        if (env.IS_PR == 'false') {
+        // if (env.IS_PR == 'false') {
           emailext(
             subject: '$DEFAULT_SUBJECT',
             body: '$DEFAULT_CONTENT',
@@ -248,7 +248,7 @@ pipeline {
             ],
             attachLog: true
           )
-        }
+        // }
         cleanWs()
       }
     }
@@ -258,9 +258,9 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build passed', 
-          status: 'Successful', 
+          status: 'SUCCESS', 
           sha: commitSha,
-          targetUrl: "${env.RUN_DISPLAY_URL}"
+          targetUrl: "${env.BUILD_URL}"
         )
       }
     }
@@ -272,7 +272,7 @@ pipeline {
           description: 'Build failed', 
           status: 'FAILURE', 
           sha: commitSha,
-          targetUrl: "${env.RUN_DISPLAY_URL}"
+          targetUrl: "${env.BUILD_URL}"
         )
       }
     }
