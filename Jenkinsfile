@@ -258,7 +258,7 @@ pipeline {
       githubNotify(
         context: 'jenkins/build', 
         description: 'Build passed', 
-        status: 'SUCCESS', 
+        status: 'Successful', 
         sha: commitSha,
         targetUrl: "${env.RUN_DISPLAY_URL}"
       )
