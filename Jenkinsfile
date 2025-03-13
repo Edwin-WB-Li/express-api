@@ -18,7 +18,7 @@ pipeline {
   githubPullRequests(
     triggerMode: 'HEAVY_HOOK',
     events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED],
-    branches: [new GitHubPRBranch('dev')]
+    // branches: [new GitHubPRBranch('dev')]
   )
 }
   stages {
