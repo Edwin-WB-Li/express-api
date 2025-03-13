@@ -3,7 +3,7 @@ pipeline {
   environment {
     NPM_REGISTRY = 'https://registry.npmmirror.com' // 国内镜像加速
     APP_NAME = 'express-api' // 项目名称
-    GITHUB_CREDENTIALS_ID = 'b8d8ba40-e6b3-41a5-8bf3-594292ca6382'
+    GITHUB_CREDENTIALS_ID = credentials('b8d8ba40-e6b3-41a5-8bf3-594292ca6382')
     // 通过环境变量区分 PR 构建
     // IS_PR = env.CHANGE_ID ? 'true' : 'false' // CHANGE_ID 存在时为 PR 构建
   }
