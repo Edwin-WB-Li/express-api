@@ -241,7 +241,7 @@ pipeline {
             body: '$DEFAULT_CONTENT',
             mimeType: 'text/html',
             to: 'a15277019572@aliyun.com',
-            attachmentsPattern: '*.zip',
+            // attachmentsPattern: '*.zip',
             recipientProviders: [
               [$class: 'CulpritsRecipientProvider'],
               [$class: 'RequesterRecipientProvider']
@@ -252,30 +252,6 @@ pipeline {
         cleanWs()
       }
     }
-  //   success {
-  //     script {
-  //       // 获取 PR 关联的 Commit SHA
-  //       def commitSha = checkout(scm).GIT_COMMIT
-  //       githubNotify(
-  //         context: 'jenkins/build', 
-  //         description: 'Build passed', 
-  //         status: 'SUCCESS', 
-  //         sha: commitSha // 关联 PR 的具体 Commit
-  //       )
-  //     }
-  //   }
-  //   failure {
-  //     script {
-  //       def commitSha = checkout(scm).GIT_COMMIT
-  //       githubNotify(
-  //         context: 'jenkins/build', 
-  //         description: 'Build failed', 
-  //         status: 'FAILURE', 
-  //         sha: commitSha
-  //       )
-  //     }
-  //   }
-  // }
   success {
     script {
       def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
