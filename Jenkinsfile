@@ -139,13 +139,13 @@ pipeline {
     nodejs 'node 20' // 确保与全局配置名称一致
   }
   triggers {
-    // GitHub PR 触发构建（需配置 Webhook）
-    GitHubPullRequest(
-      triggerOnPullRequest: true,
-      triggerOnCommit: true,
-      events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
-    )
-  }
+  // 使用正确的触发器名称
+  githubPullRequests(
+    triggerOnPullRequest: true,
+    // 指定触发事件类型
+    events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
+  )
+}
   stages {
     // 阶段1：拉取代码
     stage('Git Check') {
