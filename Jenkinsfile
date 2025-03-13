@@ -11,9 +11,14 @@ pipeline {
   }
   triggers {
   // 使用正确的触发器名称
+  // githubPullRequests(
+  //   triggerMode: GitHubPRTriggerMode.HOOK,  // 需配合 Webhook
+  //   events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
+  // )
   githubPullRequests(
-    triggerMode: GitHubPRTriggerMode.HOOK,  // 需配合 Webhook
-    events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
+    triggerMode: 'HEAVY_HOOK',
+    events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED],
+    branches: [new GitHubPRBranch('dev')]
   )
 }
   stages {
@@ -27,7 +32,7 @@ pipeline {
             // 合并 PR 到目标分支（如 master
             [$class: 'PreBuildMerge', options: [mergeRemote: 'origin', mergeTarget: 'master']]
           ],
-          userRemoteConfigs: [[url: env.GIT_URL]]
+          userRemoteConfigs: [[url: env.GIT_URL,refspec: '+refs/pull/*:refs/remotes/origin/pr/*']]
         ])
       }
     }
