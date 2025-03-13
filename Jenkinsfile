@@ -252,28 +252,29 @@ pipeline {
         cleanWs()
       }
     }
-  success {
-    script {
-      def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
-      githubNotify(
-        context: 'jenkins/build', 
-        description: 'Build passed', 
-        status: 'Successful', 
-        sha: commitSha,
-        targetUrl: "${env.RUN_DISPLAY_URL}"
-      )
+    success {
+      script {
+        def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
+        githubNotify(
+          context: 'jenkins/build', 
+          description: 'Build passed', 
+          status: 'Successful', 
+          sha: commitSha,
+          targetUrl: "${env.RUN_DISPLAY_URL}"
+        )
+      }
     }
-  }
-  failure {
-    script {
-      def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
-      githubNotify(
-        context: 'jenkins/build', 
-        description: 'Build failed', 
-        status: 'FAILURE', 
-        sha: commitSha,
-        targetUrl: "${env.RUN_DISPLAY_URL}"
-      )
+    failure {
+      script {
+        def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
+        githubNotify(
+          context: 'jenkins/build', 
+          description: 'Build failed', 
+          status: 'FAILURE', 
+          sha: commitSha,
+          targetUrl: "${env.RUN_DISPLAY_URL}"
+        )
+      }
     }
   }
 }
