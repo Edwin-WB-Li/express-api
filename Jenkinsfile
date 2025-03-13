@@ -189,47 +189,47 @@ pipeline {
       }
     }
     // 阶段5：Nginx 部署（仅非 PR 构建执行）
-    stage('Deploy TO Nginx') {
-      when {
-        expression { env.IS_PR == 'false' } // 非 PR 构建时执行
-      }
-      steps {
-        script {
-          def execCommand = """
-            set -ex
-            source /root/.nvm/nvm.sh
-            cd /var/www/${APP_NAME} || { echo '目录切换失败'; exit 1; }
-            unzip -o ${APP_NAME}.zip || { echo '解压失败'; exit 1; }
-            rm -f ${APP_NAME}.zip
-            chmod -R 755 .
-            npm install --registry=${NPM_REGISTRY}
-            pm2 list
-            if pm2 list | grep ${APP_NAME}; then
-              pm2 stop ${APP_NAME} || true
-              pm2 delete ${APP_NAME} || true
-            fi
-            npm run pm2 || exit 1
-            pm2 save
-            nginx -t && systemctl reload nginx
-          """
-          sshPublisher(
-            publishers: [
-              sshPublisherDesc(
-                configName: 'my ssh server', // 使用 Jenkins 凭证 ID
-                transfers: [
-                  sshTransfer(
-                    sourceFiles: '*.zip',
-                    remoteDirectory: "/${APP_NAME}",
-                    execCommand: execCommand
-                  )
-                ],
-                verbose: true
-              )
-            ]
-          )
-        }
-      }
-    }
+    // stage('Deploy TO Nginx') {
+    //   when {
+    //     expression { env.IS_PR == 'false' } // 非 PR 构建时执行
+    //   }
+    //   steps {
+    //     script {
+    //       def execCommand = """
+    //         set -ex
+    //         source /root/.nvm/nvm.sh
+    //         cd /var/www/${APP_NAME} || { echo '目录切换失败'; exit 1; }
+    //         unzip -o ${APP_NAME}.zip || { echo '解压失败'; exit 1; }
+    //         rm -f ${APP_NAME}.zip
+    //         chmod -R 755 .
+    //         npm install --registry=${NPM_REGISTRY}
+    //         pm2 list
+    //         if pm2 list | grep ${APP_NAME}; then
+    //           pm2 stop ${APP_NAME} || true
+    //           pm2 delete ${APP_NAME} || true
+    //         fi
+    //         npm run pm2 || exit 1
+    //         pm2 save
+    //         nginx -t && systemctl reload nginx
+    //       """
+    //       sshPublisher(
+    //         publishers: [
+    //           sshPublisherDesc(
+    //             configName: 'my ssh server', // 使用 Jenkins 凭证 ID
+    //             transfers: [
+    //               sshTransfer(
+    //                 sourceFiles: '*.zip',
+    //                 remoteDirectory: "/${APP_NAME}",
+    //                 execCommand: execCommand
+    //               )
+    //             ],
+    //             verbose: true
+    //           )
+    //         ]
+    //       )
+    //     }
+    //   }
+    // }
   }
   post {
     always {    
