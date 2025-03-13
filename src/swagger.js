@@ -43,7 +43,7 @@ const options = {
 		],
 	},
 	// 去指定路由下收集 swagger 注释
-	apis: [path.resolve(__dirname, './api-annotation/users.yaml'), path.resolve(__dirname, './api-annotation/*.yaml')], // 注意路径是否正确
+	apis: [path.resolve(__dirname, './api-annotation/users.yml'), path.resolve(__dirname, './api-annotation/*.yml')], // 注意路径是否正确
 };
 
 // 使用 swaggerJsDoc 生成规范的 swaggerSpec
