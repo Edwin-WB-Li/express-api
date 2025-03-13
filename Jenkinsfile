@@ -3,19 +3,25 @@ pipeline {
   environment {
     NPM_REGISTRY = 'https://registry.npmmirror.com' // 国内镜像加速
     APP_NAME = 'express-api' // 项目名称
+    GITHUB_CREDENTIALS_ID = credentials('b8d8ba40-e6b3-41a5-8bf3-594292ca6382')
     // 通过环境变量区分 PR 构建
     // IS_PR = env.CHANGE_ID ? 'true' : 'false' // CHANGE_ID 存在时为 PR 构建
   }
   tools {
     nodejs 'node 20' // 确保与全局配置名称一致
   }
-  triggers {
-  // 使用正确的触发器名称
-  githubPullRequests(
-    triggerMode: GitHubPRTriggerMode.HOOK,  // 需配合 Webhook
-    events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
-  )
-}
+  // triggers {
+  //   // 使用正确的触发器名称
+  //   githubPullRequests(
+  //     triggerMode: GitHubPRTriggerMode.HOOK,  // 需配合 Webhook
+  //     events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED]
+  //   )
+  // }
+    // githubPullRequests(
+    //   triggerMode: 'HEAVY_HOOK',
+    //   events: [GitHubPRTriggerEvent.OPENED, GitHubPRTriggerEvent.UPDATED],
+    //   // branches: [new GitHubPRBranch('dev')]
+    // )
   stages {
     // 阶段1：拉取代码
     stage('Git Check') {
@@ -23,11 +29,11 @@ pipeline {
         checkout([
           $class: 'GitSCM',
           branches: [[name: env.ghprbSourceBranch ?: 'dev']], // 自动处理 PR 分支
-          extensions: [
-            // 合并 PR 到目标分支（如 master
-            [$class: 'PreBuildMerge', options: [mergeRemote: 'origin', mergeTarget: 'master']]
-          ],
-          userRemoteConfigs: [[url: env.GIT_URL]]
+          // extensions: [
+          //   // 合并 PR 到目标分支（如 master
+          //   [$class: 'PreBuildMerge', options: [mergeRemote: 'origin', mergeTarget: 'master']]
+          // ],
+          userRemoteConfigs: [[url: env.GIT_URL,refspec: '+refs/pull/*:refs/remotes/origin/pr/*']]
         ])
       }
     }
@@ -128,6 +134,7 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build Passed', 
+          credentialsId: env.GITHUB_CREDENTIALS_ID,
           status: 'SUCCESS', 
           sha: commitSha,
           targetUrl: "${env.BUILD_URL}"
@@ -140,6 +147,7 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build Failed', 
+          credentialsId: env.GITHUB_CREDENTIALS_ID,
           status: 'FAILURE', 
           sha: commitSha,
           targetUrl: "${env.BUILD_URL}"
