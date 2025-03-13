@@ -152,7 +152,7 @@ pipeline {
       steps {
         checkout([
           $class: 'GitSCM',
-          branches: [[name: env.GIT_BRANCH]], // 自动处理 PR 分支
+          branches: [[name: env.ghprbSourceBranch ?: 'dev']], // 自动处理 PR 分支
           extensions: [
             // 合并 PR 到目标分支（如 main）
             [$class: 'PreBuildMerge', options: [mergeRemote: 'origin', mergeTarget: 'master']]
@@ -235,7 +235,7 @@ pipeline {
     always {    
       script {
         // 仅在非 PR 构建时发送邮件
-        if (env.IS_PR == 'false') {
+        // if (env.IS_PR == 'false') {
           emailext(
             subject: '$DEFAULT_SUBJECT',
             body: '$DEFAULT_CONTENT',
@@ -248,7 +248,7 @@ pipeline {
             ],
             attachLog: true
           )
-        }
+        // }
         cleanWs()
       }
     }
@@ -258,9 +258,9 @@ pipeline {
         githubNotify(
           context: 'jenkins/build', 
           description: 'Build passed', 
-          status: 'Successful', 
+          status: 'SUCCESS', 
           sha: commitSha,
-          targetUrl: "${env.RUN_DISPLAY_URL}"
+          targetUrl: "${env.BUILD_URL}"
         )
       }
     }
@@ -272,7 +272,7 @@ pipeline {
           description: 'Build failed', 
           status: 'FAILURE', 
           sha: commitSha,
-          targetUrl: "${env.RUN_DISPLAY_URL}"
+          targetUrl: "${env.BUILD_URL}"
         )
       }
     }
