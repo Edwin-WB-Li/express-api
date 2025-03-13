@@ -1,10 +1,16 @@
+### 依赖安装
+
 ```bash
 npm install
-running:
-npm run dev
 ```
 
+### 开发环境启动项目
+
+```bash
+npm run dev
+
 Open [http://localhost:3020](http://localhost:3020) with your browser to see the result.
+```
 
 ### 上线部署
 
