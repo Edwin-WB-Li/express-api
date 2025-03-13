@@ -252,28 +252,52 @@ pipeline {
         cleanWs()
       }
     }
-    success {
-      script {
-        // 获取 PR 关联的 Commit SHA
-        def commitSha = checkout(scm).GIT_COMMIT
-        githubNotify(
-          context: 'jenkins/build', 
-          description: 'Build passed', 
-          status: 'SUCCESS', 
-          sha: commitSha // 关联 PR 的具体 Commit
-        )
-      }
+  //   success {
+  //     script {
+  //       // 获取 PR 关联的 Commit SHA
+  //       def commitSha = checkout(scm).GIT_COMMIT
+  //       githubNotify(
+  //         context: 'jenkins/build', 
+  //         description: 'Build passed', 
+  //         status: 'SUCCESS', 
+  //         sha: commitSha // 关联 PR 的具体 Commit
+  //       )
+  //     }
+  //   }
+  //   failure {
+  //     script {
+  //       def commitSha = checkout(scm).GIT_COMMIT
+  //       githubNotify(
+  //         context: 'jenkins/build', 
+  //         description: 'Build failed', 
+  //         status: 'FAILURE', 
+  //         sha: commitSha
+  //       )
+  //     }
+  //   }
+  // }
+  success {
+    script {
+      def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
+      githubNotify(
+        context: 'jenkins/build', 
+        description: 'Build passed', 
+        status: 'SUCCESS', 
+        sha: commitSha,
+        targetUrl: "${env.RUN_DISPLAY_URL}"
+      )
     }
-    failure {
-      script {
-        def commitSha = checkout(scm).GIT_COMMIT
-        githubNotify(
-          context: 'jenkins/build', 
-          description: 'Build failed', 
-          status: 'FAILURE', 
-          sha: commitSha
-        )
-      }
+  }
+  failure {
+    script {
+      def commitSha = env.ghprbActualCommit ?: env.GIT_COMMIT
+      githubNotify(
+        context: 'jenkins/build', 
+        description: 'Build failed', 
+        status: 'FAILURE', 
+        sha: commitSha,
+        targetUrl: "${env.RUN_DISPLAY_URL}"
+      )
     }
   }
 }
