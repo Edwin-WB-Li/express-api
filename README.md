@@ -8,9 +8,9 @@ npm install
 
 ```bash
 npm run dev
+```
 
 Open [http://localhost:3020](http://localhost:3020) with your browser to see the result.
-```
 
 ### 上线部署
 
