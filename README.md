@@ -17,7 +17,7 @@ Open [http://localhost:3020](http://localhost:3020) with your browser to see the
 ```bash
 启动：
   npm run pm2
-  # or
+  # 或者
 	pm2 start ecosystem.config.js --env production
 
 保存运行：
